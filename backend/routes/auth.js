@@ -86,7 +86,6 @@ export const verifyUser = (req, res, next) => {
   try {
     const verified = jwt.verify(token, process.env.SECRET);
     req.user = verified;
-    console.log("Verified", verified);
     next();
   } catch (error) {
     res.status(403).json({ message: "Invalid Token" });
@@ -100,7 +99,6 @@ router.get("/user-data",verifyUser, async (req, res) => {
       "SELECT username, user_id, bio, created_at, profile_pic_url, name FROM users WHERE user_id = $1",
       [req.user.id]
     );
-    console.log(response.rows);
     res.status(200).json(response.rows[0]);
   } catch (err) {
     console.log("Error in getting user data", err);

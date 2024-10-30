@@ -1,9 +1,11 @@
 export type SingleProfileProps = {
     chat: {
-        id: number;
-        username: string;
-        name?: string;
-        msg?:string;
-        time?:string;
-    }
-}
+        chat_id?: string;
+        friend_id?: string;
+        friend_name?: string;
+        friend_profile_pic?: string | null;
+        friend_username?: string;
+        last_message?: string | null;
+        last_message_time?: string | null;
+    };
+  };

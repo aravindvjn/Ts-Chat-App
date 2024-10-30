@@ -5,6 +5,8 @@ import { FormProps } from "./type";
 import Action from "./Action";
 import { useNavigate } from "react-router-dom";
 import PopUp from "../../components/PopUp/PopUp";
+import handleSubmit from "./handleSubmit";
+import { AppName } from "../../global/Links/Links";
 
 const Form = ({ page = "Login" }: AuthProps) => {
   const navigate = useNavigate();
@@ -42,10 +44,18 @@ const Form = ({ page = "Login" }: AuthProps) => {
         );
       } else {
         navigate("/register/set-profile", {
-          state: input
+          state: input,
         });
       }
     } else {
+      console.log("login");
+      const response = await handleSubmit(input, "login");
+      console.log(response)
+      if (response.status) {
+        navigate("/");
+      } else {
+        console.log(response.message);
+      }
     }
   };
   const messages = {
@@ -59,7 +69,7 @@ const Form = ({ page = "Login" }: AuthProps) => {
       className="flex flex-col gap-3 px-10 sm:w-[500px]"
     >
       {message && <PopUp message={message} setMessage={setMessage} />}
-      <p className="text- text-center font-bold">Ts Chat App</p>
+      <p className="text- text-center font-bold">{AppName}</p>
       <p className="text-center">
         {page === "Register" ? messages.Register : messages.Login}{" "}
       </p>

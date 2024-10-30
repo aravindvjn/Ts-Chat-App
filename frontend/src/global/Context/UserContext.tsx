@@ -14,16 +14,19 @@ type UserProviderProps = {
 };
 
 export type ContextProps = {
-  user: UserProps | null; // Update to UserProps | null
-  setUser: (user: UserProps | null) => void; // Accept UserProps or null
+  user: UserProps | null;
+  setUser: (user: UserProps | null) => void;
+  refresh: boolean;
+  setRefresh: (refresh: boolean) => void;
 };
 
-export const UserContext = createContext<ContextProps | null>(null); // Default value is null
+export const UserContext = createContext<ContextProps | null>(null);
 
 const UserProvider = ({ children }: UserProviderProps) => {
-  const [user, setUser] = useState<UserProps | null>(null); // Initial user state
+  const [user, setUser] = useState<UserProps | null>(null);
+  const [refresh, setRefresh] = useState<boolean>(false);
 
-  const value = useMemo(() => ({ user, setUser }), [user]);
+  const value = useMemo(() => ({ user, setUser, refresh, setRefresh }), [user]);
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

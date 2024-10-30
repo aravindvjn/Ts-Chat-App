@@ -1,32 +1,29 @@
-import { useNavigate } from "react-router-dom";
 import { authURL } from "../../global/Links/Links";
 import { FormProps } from "./type";
 const handleSubmit = async (input: FormProps, page: string) => {
-    const navigate = useNavigate()
     try {
-        if (page === "Register") {
-            console.log("hai")
-            const response = await fetch(authURL + 'register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(input)
-            })
-            const data = await response.json()
-            console.log(data)
-            if (response.ok) {
-                console.log(data.token)
-                localStorage.setItem("token", data.token)
-                navigate("/")
-            } else {
-                console.log(data.message)
-            }
+        const url = page === "Register" ? 'register' : 'login'
+        const response = await fetch(authURL + url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(input)
+        })
+        const data = await response.json()
+        console.log(data)
+        if (response.ok) {
+            console.log(data.token)
+            localStorage.setItem("token", data.token)
+            return { status: true }
         } else {
-            return false;
+            console.log(data.message)
+            return { status: false, message: data.message }
         }
+
     } catch (err) {
         console.error("Error in Auth.")
+        return { status: false, message: "Server not responding." }
     }
 }
 

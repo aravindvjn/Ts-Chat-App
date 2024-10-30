@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Avatar from "../../components/Avatar/Avatar";
 import { uploadProfilePicture } from "../../firebase/firebase";
 import handleSubmit from "./handleSubmit";
@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FormProps } from "./type";
 
 const SetProfile = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
   const [input, setInput] = useState<FormProps>({
@@ -44,12 +45,17 @@ const SetProfile = () => {
 
   //create account
   const submitHandler = async () => {
-    await handleSubmit(input, "Register");
+    const response = await handleSubmit(input, "Register");
+    if (response.status) {
+      navigate("/");
+    } else {
+      console.log(response.message);
+    }
   };
   return (
     <div className="bg-black min-h-lvh flex justify-center items-center flex-col">
       <p className="text-white">Profile Picture</p>
-      <Avatar src={input.profile_pic_url} className="w-[224px] h-[190px]" />
+      <Avatar src={input.profile_pic_url} className="w-[224px] h-[180px]" />
       <label
         htmlFor="photo-upload"
         className="mt-5 flex flex-col items-center justify-center w-1/3 h-16 bg-gray-50 rounded-lg border-4 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100"

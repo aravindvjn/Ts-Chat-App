@@ -1,26 +1,50 @@
-import { Home, Person, Search } from "@mui/icons-material";
-import { useContext, useEffect } from "react";
+import { Home, Notifications, Person, Search } from "@mui/icons-material";
+import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getUserData } from "../../global/UserData/UserData";
 import { UserContext } from "../../global/Context/UserContext";
+import { friendURL } from "../../global/Links/Links";
 
 const Footer = () => {
+  const token = localStorage.getItem("token");
+  const [notificationNo, setNotificationNo] = useState<number | null>(null);
   const userContext = useContext(UserContext);
   const footerClasses = "text-black cursor-pointer";
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
   useEffect(() => {
-    console.log("Refreshed");
+    console.log("Refreshed in footer");
     const fetchUser = async () => {
       const userData = await getUserData();
-      console.log(userData);
       userContext?.setUser(userData);
     };
     if (userContext) {
       fetchUser();
     }
-  }, [pathname]);
+    const fetchAllFriends = async () => {
+      try {
+        const response = await fetch(friendURL + "pending-requests", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        if (response.ok) {
+          console.log("no")
+          setNotificationNo(data?.length);
+        } else {
+          console.log("Message", data.message);
+          setNotificationNo(0)
+        }
+      } catch (err) {
+        console.error("Error in Fetching chat Profiles", err);
+      }
+    };
+    fetchAllFriends();
+  }, [pathname,userContext?.refresh]);
   return (
     <div className="flex justify-around items-center bg-secondary h-16 fixed right-0 left-0 bottom-0 shadow-top">
       <Home
@@ -35,6 +59,16 @@ const Footer = () => {
         fontSize="large"
         onClick={() => navigate("/search")}
       />
+      <div className="relative">
+        <Notifications
+          className={`${footerClasses} ${
+            pathname === "/notifications" ? "opacity-75" : ""
+          }`}
+          fontSize="large"
+          onClick={() => navigate("/notifications")}
+        />
+        <p className="absolute right-0 top-0 bg-red-600  text-white rounded-full h-4 w-4 flex justify-center items-center text-[10px]">{notificationNo}</p>
+      </div>
       <Person
         className={`${footerClasses} ${
           pathname === "/user-profile" ? "opacity-75" : ""
