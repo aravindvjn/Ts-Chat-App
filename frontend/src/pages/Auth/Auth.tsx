@@ -7,7 +7,7 @@ export type AuthProps = {
 
 const Auth = () => {
   const location = useLocation();
-  const page = location?.pathname === "/login" ? "Login" : "Register";
+  const page = location?.pathname === "/register" ? "Register" : "Login";
   return (
     <div className="flex justify-center min-h-lvh items-center bg-black text-background">
       <Form page={page} />

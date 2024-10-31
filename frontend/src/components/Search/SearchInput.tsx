@@ -2,7 +2,7 @@ import { Search } from "@mui/icons-material";
 type SearchInputProps = {
   input?: string;
   handleSearch?: () => void;
-  onChange?: () => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const SearchInput = ({ input, handleSearch, onChange }: SearchInputProps) => {
@@ -12,7 +12,7 @@ const SearchInput = ({ input, handleSearch, onChange }: SearchInputProps) => {
         value={input}
         onChange={onChange}
         type="text"
-        className="w-full px-3 pl-10 outline-1 outline outline-gray-400 py-2 rounded-md"
+        className=" w-full px-3 pl-10 outline-1 outline outline-gray-400 py-2 rounded-md"
         placeholder="Search..."
       />
       <Search

@@ -18,7 +18,6 @@ const Suggested = () => {
         });
         const data = await response.json();
         if (response.ok) {
-          console.log(data)
           setLimitedUsers(data);
         } else {
           console.log("Message", data.message);

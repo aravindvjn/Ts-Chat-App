@@ -15,6 +15,31 @@ client
   .then(() => console.log("Connected to the database at friends"))
   .catch((err) => console.error("Connection error", err.stack));
 
+//Search Friends
+// Search endpoint
+router.get("/search-user", async (req, res) => {
+  const searchQuery = req.query.search;
+
+  if (!searchQuery) {
+    return res.status(400).send("Please provide a search query.");
+  }
+
+  try {
+    const result = await client.query(
+      "SELECT user_id, username, name, profile_pic_url, bio,created_at FROM users WHERE name ILIKE $1 OR username ILIKE $1",
+      [`%${searchQuery}%`]
+    );
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows);
+    } else {
+      res.status(201).json({ message: "No users Found." });
+    }
+  } catch (error) {
+    console.error("Error executing query:", error);
+    res.status(500).send("Server error");
+  }
+});
+
 //Get new n users
 router.get("/all-friends/:n", verifyUser, async (req, res) => {
   try {
@@ -74,72 +99,64 @@ router.post("/send-friend-request", verifyUser, async (req, res) => {
 });
 
 //accept friend request
-router.post(
-  "/friend-request/:request_id",
-  verifyUser,
-  async (req, res) => {
-    const request_id = req.params.request_id;
-    try {
-      const result = await client.query(
-        "SELECT sender_id, receiver_id FROM friend_requests WHERE request_id = $1 AND receiver_id = $2 ;",
+router.post("/friend-request/:request_id", verifyUser, async (req, res) => {
+  const request_id = req.params.request_id;
+  try {
+    const result = await client.query(
+      "SELECT sender_id, receiver_id FROM friend_requests WHERE request_id = $1 AND receiver_id = $2 ;",
+      [request_id, req.user.id]
+    );
+
+    if (result.rows.length > 0) {
+      const { sender_id, receiver_id } = result.rows[0];
+      await client.query(
+        "DELETE FROM friend_requests WHERE request_id = $1 AND receiver_id = $2 ;",
         [request_id, req.user.id]
       );
 
-      if (result.rows.length > 0) {
-        const { sender_id, receiver_id } = result.rows[0];
-        await client.query(
-          "DELETE FROM friend_requests WHERE request_id = $1 AND receiver_id = $2 ;",
-          [request_id, req.user.id]
-        );
+      const user1_id = sender_id < receiver_id ? sender_id : receiver_id;
+      const user2_id = sender_id > receiver_id ? sender_id : receiver_id;
 
-        const user1_id = sender_id < receiver_id ? sender_id : receiver_id;
-        const user2_id = sender_id > receiver_id ? sender_id : receiver_id;
+      const chatResult = await client.query(
+        "INSERT INTO chats (user1_id, user2_id) VALUES ($1, $2) RETURNING chat_id;",
+        [user1_id, user2_id]
+      );
 
-        const chatResult = await client.query(
-          "INSERT INTO chats (user1_id, user2_id) VALUES ($1, $2) RETURNING chat_id;",
-          [user1_id, user2_id]
-        );
-
-        if (chatResult.rows.length > 0) {
-          res.status(200).json({
-            message: "Friend request accepted and chat created.",
-            chat: chatResult.rows[0],
-          });
-        } else {
-          res.status(400).json({ message: "Failed to create chat." });
-        }
-      } else {
-        res.status(404).json({
-          message:
-            "Friend request not found or you are not authorized to accept it.",
+      if (chatResult.rows.length > 0) {
+        res.status(200).json({
+          message: "Friend request accepted and chat created.",
+          chat: chatResult.rows[0],
         });
+      } else {
+        res.status(400).json({ message: "Failed to create chat." });
       }
-    } catch (err) {
-      console.error("Error in accepting friend request:", err);
-      res.status(500).json({ message: "Server error" });
+    } else {
+      res.status(404).json({
+        message:
+          "Friend request not found or you are not authorized to accept it.",
+      });
     }
+  } catch (err) {
+    console.error("Error in accepting friend request:", err);
+    res.status(500).json({ message: "Server error" });
   }
-);
+});
 
 //rejecting friend request
-router.delete(
-  "/friend-request/:request_id",
-  verifyUser,
-  async (req, res) => {
-    const request_id = req.params.request_id;
-    try {
-      await client.query(
-        "DELETE FROM friend_requests WHERE request_id = $1 AND (sender_id = $2 OR receiver_id = $2);",
-        [request_id, req.user.id]
-      );
+router.delete("/friend-request/:request_id", verifyUser, async (req, res) => {
+  const request_id = req.params.request_id;
+  try {
+    await client.query(
+      "DELETE FROM friend_requests WHERE request_id = $1 AND (sender_id = $2 OR receiver_id = $2);",
+      [request_id, req.user.id]
+    );
 
-      res.status(200).json({ message: "Friend request rejected." });
-    } catch (err) {
-      console.error("Error rejecting friend request:", err);
-      res.status(500).json({ message: "Server error" });
-    }
+    res.status(200).json({ message: "Friend request rejected." });
+  } catch (err) {
+    console.error("Error rejecting friend request:", err);
+    res.status(500).json({ message: "Server error" });
   }
-);
+});
 
 //Get all friend request
 router.get("/pending-requests", verifyUser, async (req, res) => {

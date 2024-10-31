@@ -3,6 +3,7 @@ import { friendURL } from "../../global/Links/Links";
 import SingleRequest from "./SingleRequest";
 import Suggested from "../Search/Suggested";
 import { UserContext } from "../../global/Context/UserContext";
+import Footer from "../../components/Footer/Footer";
 
 const Notifications = () => {
   const userContext = useContext(UserContext);
@@ -43,6 +44,7 @@ const Notifications = () => {
         <p className="text-center p-5 opacity-60">No Friend requests</p>
       )}
       <Suggested />
+      <Footer />
     </div>
   );
 };

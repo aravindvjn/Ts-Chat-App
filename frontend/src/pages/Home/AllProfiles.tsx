@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { chatURL } from "../../global/Links/Links";
 import SingleProfile from "./SingleProfile";
-import { io } from "socket.io-client"; // Import Socket.IO client
-
-const socket = io(chatURL); // Connect to the Socket.IO server
 
 interface Chat {
   chat_id: string;
@@ -21,7 +18,6 @@ interface Chat {
 const AllProfiles: React.FC = () => {
   const [chatFriends, setChatFriends] = useState<Chat[]>([]);
   const token = localStorage.getItem("token");
-  const userId = token ? JSON.parse(atob(token.split('.')[1])).id : null; // Extract user ID from token
 
   useEffect(() => {
     const fetchAllFriends = async () => {
@@ -35,24 +31,13 @@ const AllProfiles: React.FC = () => {
         });
         const data: Chat[] = await response.json();
         setChatFriends(data);
-        console.log(data);
       } catch (err) {
         console.error("Error in Fetching chat Profiles", err);
       }
     };
 
     fetchAllFriends();
-
-    // Listen for 'user-chats-updated' event to receive real-time updates
-    socket.on("user-chats-updated", (updatedChats: Chat[]) => {
-      // Update the chatFriends state with new data
-      setChatFriends(updatedChats);
-    });
-
-    return () => {
-      socket.off("user-chats-updated"); 
-    };
-  }, [token, userId]); 
+  }, [token]);
 
   return (
     <div>

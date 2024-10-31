@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {  useState } from "react";
 import Input from "../../components/Input/Input";
 import { AuthProps } from "./Auth";
 import { FormProps } from "./type";
@@ -27,7 +27,6 @@ const Form = ({ page = "Login" }: AuthProps) => {
   };
   const handleSubmitCheck = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(input);
     if (page === "Register") {
       if (
         !input.name ||
@@ -50,7 +49,6 @@ const Form = ({ page = "Login" }: AuthProps) => {
     } else {
       console.log("login");
       const response = await handleSubmit(input, "login");
-      console.log(response)
       if (response.status) {
         navigate("/");
       } else {

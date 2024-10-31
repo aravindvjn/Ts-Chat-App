@@ -1,7 +1,6 @@
 import { Home, Notifications, Person, Search } from "@mui/icons-material";
 import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getUserData } from "../../global/UserData/UserData";
 import { UserContext } from "../../global/Context/UserContext";
 import { friendURL } from "../../global/Links/Links";
 
@@ -14,14 +13,6 @@ const Footer = () => {
   const location = useLocation();
   const { pathname } = location;
   useEffect(() => {
-    console.log("Refreshed in footer");
-    const fetchUser = async () => {
-      const userData = await getUserData();
-      userContext?.setUser(userData);
-    };
-    if (userContext) {
-      fetchUser();
-    }
     const fetchAllFriends = async () => {
       try {
         const response = await fetch(friendURL + "pending-requests", {
@@ -40,7 +31,7 @@ const Footer = () => {
       } catch (err) {}
     };
     fetchAllFriends();
-  }, [pathname, userContext?.refresh]);
+  }, [ userContext?.refresh]);
   return (
     <div className="flex justify-around items-center bg-secondary h-16 fixed right-0 left-0 bottom-0 shadow-top">
       <Home

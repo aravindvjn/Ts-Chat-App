@@ -4,6 +4,7 @@ import { UserProps } from "../../global/Context/UserContext";
 import { friendURL } from "../../global/Links/Links";
 import Avatar from "../../components/Avatar/Avatar";
 import Operations from "./Operations";
+import Footer from "../../components/Footer/Footer";
 
 const OtherProfiles = () => {
   const { id } = useParams();
@@ -32,14 +33,11 @@ const OtherProfiles = () => {
     fetchAllFriends();
   }, []);
   if (!otherUser) {
-    return <p>No users</p>;
+    return <p>Loading..</p>;
   }
   return (
     <div className="p-5 pt-10 flex flex-col justify-center items-center">
-      <Avatar
-        className="w-[224px] h-[189px]"
-        src={otherUser?.profile_pic_url}
-      />
+      <Avatar variant="double" src={otherUser?.profile_pic_url} />
       <p className="font-bold text-lg pt-2">{otherUser?.name}</p>
       <p className="text-gray-500">@{otherUser?.username}</p>
 
@@ -53,6 +51,7 @@ const OtherProfiles = () => {
         </p>
       </div>
       <Operations id={id} />
+      <Footer />
     </div>
   );
 };

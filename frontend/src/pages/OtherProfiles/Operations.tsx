@@ -33,7 +33,6 @@ const Operations = ({ id }: IdProps) => {
         }
         const data = await response.json();
         setStatus(data);
-        console.log(data);
       } catch (err) {
         console.log("Error in fetcing friend status", err);
       }

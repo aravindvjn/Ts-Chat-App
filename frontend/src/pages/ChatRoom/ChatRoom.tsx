@@ -48,8 +48,8 @@ const ChatRoom = () => {
       }
     };
 
-    // fetchChats();
     fetchOtherUser();
+    connectSocket();
     connectSocket();
     emitEvent("fetch-messages" + userContext?.user?.user_id, chat_id);
     listenToEvent(
