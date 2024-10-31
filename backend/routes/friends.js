@@ -161,7 +161,7 @@ router.get("/pending-requests", verifyUser, async (req, res) => {
     if (result.rows.length > 0) {
       res.status(200).json(result.rows);
     } else {
-      res.status(404).json({ message: "No pending requests." });
+      res.status(201).json({ message: "No pending requests." });
     }
   } catch (err) {
     console.error("Error fetching pending requests:", err);

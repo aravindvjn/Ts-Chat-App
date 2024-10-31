@@ -2,4 +2,4 @@ export const friendURL = import.meta.env.VITE_APP_BASE_URL + "friends/";
 export const authURL = import.meta.env.VITE_APP_BASE_URL + "auth/";
 export const chatURL = import.meta.env.VITE_APP_BASE_URL + "chat/";
 
-export const AppName = "Earth 369"
+export const AppName = "Ts Chat App"

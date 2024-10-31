@@ -7,5 +7,8 @@ export type SingleProfileProps = {
         friend_username?: string;
         last_message?: string | null;
         last_message_time?: string | null;
+        last_message_id?: string | null;
+        last_message_sender_id?: string | null;
+        last_message_is_read?: boolean | null;
     };
-  };
+};

@@ -5,7 +5,7 @@ import Suggested from "../Search/Suggested";
 import { UserContext } from "../../global/Context/UserContext";
 
 const Notifications = () => {
-  const userContext = useContext(UserContext)
+  const userContext = useContext(UserContext);
   const [requests, setRequests] = useState([]);
   useEffect(() => {
     const fetchFriendRequests = async () => {
@@ -20,7 +20,7 @@ const Notifications = () => {
         });
 
         const data = await response.json();
-        if (response.ok) {
+        if (response.status === 200) {
           setRequests(data);
         } else {
           console.log(data.message);

@@ -2,7 +2,6 @@ import { Send } from "@mui/icons-material";
 import React, { useState, useRef, FormEvent } from "react";
 import { ChatHeaderProps } from "./ChatHeader";
 import { chatURL } from "../../global/Links/Links";
-import { refresh } from "aos";
 
 const SendChat: React.FC<ChatHeaderProps> = ({
   receiverId,

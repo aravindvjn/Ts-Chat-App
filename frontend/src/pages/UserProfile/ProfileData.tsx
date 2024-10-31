@@ -12,7 +12,7 @@ const ProfileData = () => {
     <div className="flex flex-col justify-center gap-2 items-center">
       {user ? (
         <>
-          <Avatar className="w-[224px] h-[189px]" src={user.profile_pic_url} />
+          <Avatar variant="double" src={user.profile_pic_url} />
           <div className="text-left w-full flex flex-col gap-1">
             <p>Name: {user.name}</p>
             <p>Username: @{user.username}</p>

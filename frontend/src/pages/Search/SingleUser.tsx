@@ -12,7 +12,7 @@ const SingleUser = ({ user }: SingleUserProps) => {
       className="p-2 border-b flex gap-4"
       onClick={() => navigate("/profile-user/" + user?.user_id)}
     >
-      <Avatar className="w-[90px] h-[74px]" src={user?.profile_pic_url} />
+      <Avatar variant="small" src={user?.profile_pic_url} />
       <div>
         <p className="font-medium">{user?.name}</p>
         <p className="opacity-40 text-[12px]">@{user?.username}</p>

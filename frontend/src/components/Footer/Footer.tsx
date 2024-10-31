@@ -7,7 +7,7 @@ import { friendURL } from "../../global/Links/Links";
 
 const Footer = () => {
   const token = localStorage.getItem("token");
-  const [notificationNo, setNotificationNo] = useState<number | null>(null);
+  const [notificationNo, setNotificationNo] = useState<number>(0);
   const userContext = useContext(UserContext);
   const footerClasses = "text-black cursor-pointer";
   const navigate = useNavigate();
@@ -32,19 +32,15 @@ const Footer = () => {
           },
         });
         const data = await response.json();
-        if (response.ok) {
-          console.log("no")
+        if (response.status === 200) {
           setNotificationNo(data?.length);
         } else {
-          console.log("Message", data.message);
-          setNotificationNo(0)
+          setNotificationNo(0);
         }
-      } catch (err) {
-        console.error("Error in Fetching chat Profiles", err);
-      }
+      } catch (err) {}
     };
     fetchAllFriends();
-  }, [pathname,userContext?.refresh]);
+  }, [pathname, userContext?.refresh]);
   return (
     <div className="flex justify-around items-center bg-secondary h-16 fixed right-0 left-0 bottom-0 shadow-top">
       <Home
@@ -67,7 +63,12 @@ const Footer = () => {
           fontSize="large"
           onClick={() => navigate("/notifications")}
         />
-        <p className="absolute right-0 top-0 bg-red-600  text-white rounded-full h-4 w-4 flex justify-center items-center text-[10px]">{notificationNo}</p>
+
+        {notificationNo > 0 && (
+          <p className="absolute right-0 top-0 bg-red-600  text-white rounded-full h-4 w-4 flex justify-center items-center text-[10px]">
+            {notificationNo}
+          </p>
+        )}
       </div>
       <Person
         className={`${footerClasses} ${

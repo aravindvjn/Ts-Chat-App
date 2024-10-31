@@ -1,11 +1,13 @@
 import { Router } from "express";
+import { io } from "../index.js"; // Import the Socket.IO instance
 const router = Router();
 import pkg from "pg";
 import dotenv from "dotenv";
 import { verifyUser } from "./auth.js";
+
 dotenv.config();
 
-//Database
+// Database
 const { Client } = pkg;
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
@@ -15,39 +17,14 @@ client
   .then(() => console.log("Connected to the database at chat"))
   .catch((err) => console.error("Connection error", err.stack));
 
-// //create a chat
-// router.post("/create-chat", verifyUser, async (req, res) => {
-//   try {
-//     const { otherUser } = req.body;
-//     const [user1_id, user2_id] =
-//       req.user.id > user1_id
-//         ? [otherUser, req.user.id]
-//         : [req.user.id, otherUser];
-//     const results = await client.query(
-//       "INSERT INTO chats (user1_id, user2_id) VALUES ($1,$2) RETURNING chat_id",
-//       [user1_id, user2_id]
-//     );
-//     if (results.rows.length > 0) {
-//       console.log("results", results.rows);
-//       res.status(200).json({ message: "Created Chat." });
-//     } else {
-//       res.status(400).json({ message: "Failed to create Chat." });
-//     }
-//   } catch (err) {
-//     console.error("Error in Creating chat.");
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
-
-//Get User details by chat_id
+// Get User details by chat_id
 router.get("/user-details/:chat_id", verifyUser, async (req, res) => {
   const { chat_id } = req.params;
   const user_id = req.user.id;
 
   try {
     const results = await client.query(
-      `
-      SELECT 
+      `SELECT 
         u.user_id, 
         u.username, 
         u.name, 
@@ -55,8 +32,7 @@ router.get("/user-details/:chat_id", verifyUser, async (req, res) => {
       FROM chats c
       JOIN users u ON 
         (u.user_id = c.user1_id OR u.user_id = c.user2_id)
-      WHERE c.chat_id = $1 AND u.user_id != $2
-      `,
+      WHERE c.chat_id = $1 AND u.user_id != $2`,
       [chat_id, user_id]
     );
 
@@ -71,15 +47,13 @@ router.get("/user-details/:chat_id", verifyUser, async (req, res) => {
   }
 });
 
-
 // Get all chats by user ID, including details for user1, user2, and the last message
 router.get("/user-all-chats", verifyUser, async (req, res) => {
   try {
     const userId = req.user.id;
 
     const results = await client.query(
-      `
-      SELECT 
+      `SELECT 
         c.chat_id, 
         CASE 
           WHEN c.user1_id = $1 THEN c.user2_id 
@@ -98,7 +72,10 @@ router.get("/user-all-chats", verifyUser, async (req, res) => {
           ELSE u1.profile_pic_url 
         END AS friend_profile_pic,
         COALESCE(m.content, NULL) AS last_message,
-        COALESCE(m.sent_at, NULL) AS last_message_time
+        COALESCE(m.sent_at AT TIME ZONE 'UTC', NULL) AS last_message_time,
+        COALESCE(m.message_id, NULL) AS last_message_id, 
+        COALESCE(m.sender_id, NULL) AS last_message_sender_id, 
+        COALESCE(m.is_read, false) AS last_message_is_read
       FROM chats c
       JOIN users u1 ON c.user1_id = u1.user_id
       JOIN users u2 ON c.user2_id = u2.user_id
@@ -106,14 +83,16 @@ router.get("/user-all-chats", verifyUser, async (req, res) => {
         SELECT DISTINCT ON (chat_id) 
           chat_id, 
           content, 
-          sent_at 
+          sent_at, 
+          message_id, -- Select message ID
+          sender_id, -- Select sender ID
+          is_read -- Select is_read status
         FROM messages 
         WHERE chat_id IS NOT NULL 
         ORDER BY chat_id, sent_at DESC
       ) m ON c.chat_id = m.chat_id
       WHERE (c.user1_id = $1 OR c.user2_id = $1)
-      GROUP BY c.chat_id, friend_id, friend_username, friend_name, friend_profile_pic, m.content, m.sent_at
-      `,
+      ORDER BY last_message_time DESC NULLS LAST, c.chat_id DESC`,
       [userId]
     );
 
@@ -130,18 +109,20 @@ router.get("/user-all-chats", verifyUser, async (req, res) => {
 
 
 
-//get last 30 messages 
+// Get last 30 messages 
 router.get("/last-30-messages/:chat_id", verifyUser, async (req, res) => {
   const chat_id = req.params.chat_id;
   const user_id = req.user.id;
   try {
     const result = await client.query(
-      "SELECT * FROM messages WHERE chat_id = $1 AND (sender_id = $2 OR receiver_id = $2) ORDER BY sent_at DESC LIMIT 30;",
+      "SELECT * FROM messages WHERE chat_id = $1 AND (sender_id = $2 OR receiver_id = $2) ORDER BY sent_at DESC LIMIT 16;",
       [chat_id, user_id]
     );
 
     if (result.rows.length > 0) {
-      res.status(200).json(result.rows.reverse()); 
+      const messages = result.rows.reverse(); 
+      res.status(200).json(messages); 
+      io.emit("last-30-messages", messages); 
     } else {
       res.status(404).json({ message: "No messages found." });
     }
@@ -151,9 +132,9 @@ router.get("/last-30-messages/:chat_id", verifyUser, async (req, res) => {
   }
 });
 
-//send messages
+// Send messages
 router.post('/send-message', verifyUser, async (req, res) => {
-  const { receiver_id, content,chat_id } = req.body;
+  const { receiver_id, content, chat_id } = req.body;
   const sender_id = req.user.id; 
 
   if (!receiver_id || !content) {
@@ -162,20 +143,49 @@ router.post('/send-message', verifyUser, async (req, res) => {
 
   try {
     const result = await client.query(
-      "INSERT INTO messages (sender_id, receiver_id, content,chat_id) VALUES ($1, $2, $3,$4) RETURNING message_id",
-      [sender_id, receiver_id, content,chat_id]
+      "INSERT INTO messages (sender_id, receiver_id, content, chat_id) VALUES ($1, $2, $3, $4) RETURNING message_id",
+      [sender_id, receiver_id, content, chat_id]
     );
 
     if (result.rows.length > 0) {
+      const messageDetails = result.rows[0];
+
+      // Emit the new message to all clients
+      io.emit("new-message", messageDetails); // Emit to all clients or specify the room
+
       res.status(201).json({
         message: "Message sent successfully.",
-        messageDetails: result.rows[0],
+        messageDetails,
       });
     } else {
       res.status(400).json({ message: "Failed to send message." });
     }
   } catch (err) {
     console.error("Error sending message:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+// Set message as read
+router.patch('/set-message-read/:message_id', verifyUser, async (req, res) => {
+  const { message_id } = req.params;
+  const user_id = req.user.id;
+
+  try {
+    const result = await client.query(
+      "UPDATE messages SET is_read = TRUE WHERE message_id = $1 AND receiver_id = $2 RETURNING *",
+      [message_id, user_id]
+    );
+
+    if (result.rows.length > 0) {
+      res.status(200).json({
+        message: "Message marked as read successfully.",
+        updatedMessage: result.rows[0],
+      });
+    } else {
+      res.status(201).json({ message: "Message not found or already read." });
+    }
+  } catch (err) {
+    console.error("Error marking message as read:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
