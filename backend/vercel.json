@@ -2,10 +2,14 @@
     "version": 2,
     "builds": [
       {
-        "src": "build/**/*",
-        "use": "@vercel/static"
+        "src": "index.js",
+        "use": "@vercel/node"
       }
     ],
+    "env": {
+      "DATABASE_URL": "postgresql://neondb_owner:PQ3SpC5NysqZ@ep-red-paper-a1ivtyul.ap-southeast-1.aws.neon.tech/neondb?sslmode=require",
+      "SECRET": "tatakaeForReal123"
+    },
     "routes": [
       {
         "src": "/(.*)",
