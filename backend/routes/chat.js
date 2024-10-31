@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { io } from "../index.js"; // Import the Socket.IO instance
+import { io } from "../index.js";
 const router = Router();
 import pkg from "pg";
 import dotenv from "dotenv";
@@ -37,9 +37,11 @@ router.get("/user-details/:chat_id", verifyUser, async (req, res) => {
     );
 
     if (results.rows.length > 0) {
-      res.status(200).json(results.rows[0]); 
+      res.status(200).json(results.rows[0]);
     } else {
-      res.status(404).json({ message: "User details not found for this chat." });
+      res
+        .status(404)
+        .json({ message: "User details not found for this chat." });
     }
   } catch (err) {
     console.error("Error fetching user details:", err);
@@ -107,66 +109,8 @@ router.get("/user-all-chats", verifyUser, async (req, res) => {
   }
 });
 
-
-
-// Get last 30 messages 
-router.get("/last-30-messages/:chat_id", verifyUser, async (req, res) => {
-  const chat_id = req.params.chat_id;
-  const user_id = req.user.id;
-  try {
-    const result = await client.query(
-      "SELECT * FROM messages WHERE chat_id = $1 AND (sender_id = $2 OR receiver_id = $2) ORDER BY sent_at DESC LIMIT 16;",
-      [chat_id, user_id]
-    );
-
-    if (result.rows.length > 0) {
-      const messages = result.rows.reverse(); 
-      res.status(200).json(messages); 
-      io.emit("last-30-messages", messages); 
-    } else {
-      res.status(404).json({ message: "No messages found." });
-    }
-  } catch (err) {
-    console.error("Error fetching messages:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// Send messages
-router.post('/send-message', verifyUser, async (req, res) => {
-  const { receiver_id, content, chat_id } = req.body;
-  const sender_id = req.user.id; 
-
-  if (!receiver_id || !content) {
-    return res.status(400).json({ message: 'Receiver ID and content are required.' });
-  }
-
-  try {
-    const result = await client.query(
-      "INSERT INTO messages (sender_id, receiver_id, content, chat_id) VALUES ($1, $2, $3, $4) RETURNING message_id",
-      [sender_id, receiver_id, content, chat_id]
-    );
-
-    if (result.rows.length > 0) {
-      const messageDetails = result.rows[0];
-
-      // Emit the new message to all clients
-      io.emit("new-message", messageDetails); // Emit to all clients or specify the room
-
-      res.status(201).json({
-        message: "Message sent successfully.",
-        messageDetails,
-      });
-    } else {
-      res.status(400).json({ message: "Failed to send message." });
-    }
-  } catch (err) {
-    console.error("Error sending message:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
 // Set message as read
-router.patch('/set-message-read/:message_id', verifyUser, async (req, res) => {
+router.patch("/set-message-read/:message_id", verifyUser, async (req, res) => {
   const { message_id } = req.params;
   const user_id = req.user.id;
 

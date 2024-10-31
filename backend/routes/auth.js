@@ -29,17 +29,14 @@ router.post("/register", async (req, res) => {
     profile_pic_url = null,
   } = req.body;
   try {
-    console.log("hai");
     const userCheck = await client.query(
       "SELECT * FROM users WHERE username = $1",
       [username]
     );
-    console.log(userCheck.rows);
     if (userCheck.rows.length > 0) {
       console.log("User already exists");
       return res.status(400).json({ message: "Username already exists" });
     }
-    console.log(password);
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await client.query(
       "INSERT INTO users (name, username, password, bio, profile_pic_url) VALUES ($1, $2, $3, $4, $5) RETURNING user_id",
@@ -104,4 +101,23 @@ router.get("/user-data",verifyUser, async (req, res) => {
     console.log("Error in getting user data", err);
   }
 });
+//Middle Ware
+export const verifyToken = (socket, next) => {
+  const token = socket.handshake.auth.token;
+
+  if (!token) {
+    return;
+  }
+
+  jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    if (err) {
+      console.log("Invalid token");
+    } else {
+      socket.user = decoded;
+      next();
+    }
+  });
+};
+
+
 export default router;

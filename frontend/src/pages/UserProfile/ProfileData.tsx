@@ -2,6 +2,7 @@ import { useContext } from "react";
 import Avatar from "../../components/Avatar/Avatar";
 import { UserContext } from "../../global/Context/UserContext";
 import { useNavigate } from "react-router-dom";
+import Logout from "./Logout";
 
 const ProfileData = () => {
   const userData = useContext(UserContext);
@@ -13,12 +14,13 @@ const ProfileData = () => {
       {user ? (
         <>
           <Avatar variant="double" src={user.profile_pic_url} />
-          <div className="text-left w-full flex flex-col gap-1">
+          <div className="text-left w-full flex flex-col gap-1 mb-5">
             <p>Name: {user.name}</p>
             <p>Username: @{user.username}</p>
             <p>Bio: {user.bio || "No bio available"}</p>
             <p>Joined on: {new Date(user.created_at).toLocaleDateString()}</p>
           </div>
+          <Logout />
         </>
       ) : (
         <button

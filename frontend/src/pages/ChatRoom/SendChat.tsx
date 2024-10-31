@@ -1,13 +1,9 @@
 import { Send } from "@mui/icons-material";
 import React, { useState, useRef, FormEvent } from "react";
 import { ChatHeaderProps } from "./ChatHeader";
-import { chatURL } from "../../global/Links/Links";
+import { emitEvent } from "../../global/Socket/socketService";
 
-const SendChat: React.FC<ChatHeaderProps> = ({
-  receiverId,
-  chatId,
-  setRefresh,
-}) => {
+const SendChat: React.FC<ChatHeaderProps> = ({ receiverId, chatId,lastMessageRef }) => {
   const [message, setMessage] = useState<string>("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -25,34 +21,17 @@ const SendChat: React.FC<ChatHeaderProps> = ({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    try {
-      setMessage("");
-      const response = await fetch(chatURL + "/send-message", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          receiver_id: receiverId,
-          content: message,
-          chat_id: chatId,
-        }),
+    emitEvent("send-message", {
+      chat_id: chatId,
+      receiver_id: receiverId,
+      message: message,
+    });
+    if (lastMessageRef?.current) {
+      lastMessageRef.current.scrollIntoView({
+        behavior: "smooth",   
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log("Message sent successfully:");
-        setRefresh?.((prev) => !prev);
-      } else {
-        console.log(data.message);
-      }
-    } catch (err) {
-      console.error("Error sending message:", err);
-      console.log("Failed to send message.");
     }
+    setMessage("");
   };
 
   return (

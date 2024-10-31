@@ -10,6 +10,13 @@ import UserProfile from "./pages/UserProfile/UserProfile";
 import { useContext } from "react";
 import Notifications from "./pages/Notifications/Notifications";
 import OtherProfiles from "./pages/OtherProfiles/OtherProfiles";
+import io from "socket.io-client";
+import { chatURL } from "./global/Links/Links";
+
+const socket = io(chatURL, {
+  transports: ["websocket"],
+  withCredentials: true,
+});
 
 function App() {
   const location = useLocation();
@@ -22,7 +29,7 @@ function App() {
         <Route path="/login" element={<Auth />} />
         <Route path="/register/set-profile" element={<SetProfile />} />
         <Route path="/register" element={<Auth />} />
-        <Route path="*" element={<Auth />} />
+        {/* <Route path="*" element={<Auth />} /> */}
       </Routes>
     );
   }
@@ -57,7 +64,7 @@ function App() {
           path="/user-profile"
           element={userData?.user ? <UserProfile /> : <Auth />}
         />
-         <Route path="*" element={<Auth />} />
+         {/* <Route path="*" element={<Auth />} /> */}
       </Routes>
       {!noFooter && <Footer />}
     </>

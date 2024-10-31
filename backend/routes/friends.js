@@ -43,7 +43,6 @@ router.get("/single-user/:id", verifyUser, async (req, res) => {
       [id]
     );
     if (results.rows.length > 0) {
-      console.log(results.rows[0]);
       res.status(201).json(results.rows);
     } else {
       res.status(401).json({ message: "Failed to Load." });
@@ -57,7 +56,6 @@ router.get("/single-user/:id", verifyUser, async (req, res) => {
 //sending friend req
 router.post("/send-friend-request", verifyUser, async (req, res) => {
   const { receiver_id } = req.body;
-  console.log("id:", req.user);
   try {
     const result = await client.query(
       "INSERT INTO friend_requests (sender_id, receiver_id) VALUES ($1, $2) ON CONFLICT (sender_id, receiver_id) DO NOTHING RETURNING *",
@@ -81,7 +79,6 @@ router.post(
   verifyUser,
   async (req, res) => {
     const request_id = req.params.request_id;
-    console.log(request_id)
     try {
       const result = await client.query(
         "SELECT sender_id, receiver_id FROM friend_requests WHERE request_id = $1 AND receiver_id = $2 ;",
