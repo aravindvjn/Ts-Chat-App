@@ -49,21 +49,21 @@ io.on("connection", (socket) => {
   console.log("A user connected");
   // Fetch last 30 messages
   const user_id = socket.user.id;
-  socket.on("fetch-messages", async (chat_id) => {
+  socket.on("fetch-messages"+user_id, async (chat_id) => {
     try {
       const result = await client.query(
         "SELECT * FROM messages WHERE chat_id = $1 AND (sender_id = $2 OR receiver_id = $2) ORDER BY sent_at DESC LIMIT 30;",
         [chat_id, user_id]
       );
       const messages = result.rows.reverse(); 
-      socket.emit("last-30-messages", messages);
+      socket.emit("last-30-messages"+user_id, messages);
     } catch (err) {
       console.error("Error fetching messages:", err);
     }
   });
 
   // Send new message
-  socket.on("send-message", async (data) => {
+  socket.on("send-message"+user_id, async (data) => {
     const { chat_id, receiver_id, message } = data;
 
     try {
@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
         [chat_id,user_id  , receiver_id, message]
       );
 
-      io.emit("new-message", result.rows[0]); // Emit to all clients in the chat
+      io.emit("new-message"+user_id, result.rows[0]); // Emit to all clients in the chat
     } catch (err) {
       console.error("Error inserting message:", err);
     }

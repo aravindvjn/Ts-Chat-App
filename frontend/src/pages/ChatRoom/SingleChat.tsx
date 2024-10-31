@@ -20,7 +20,7 @@ const SingleChat = ({ chat }: ChatsProps) => {
   const context = useContext(UserContext);
   const navigate = useNavigate();
   const chatClasses = classNames(
-    "text-black mt-3 w-fit rounded-[12px] px-3 py-2 text-[14px]",
+    "text-black mt-3 w-fit rounded-[12px] px-3 py-2 text-[14px] break-words  max-w-[300px] sm:max-w-[450px]",
     {
       "ml-4 pr-6 mr-16 rounded-tl-[0px]  bg-[#E5E7EB]":
         chat?.sender_id !== context?.user?.user_id,
@@ -38,7 +38,7 @@ const SingleChat = ({ chat }: ChatsProps) => {
       }`}
     >
       <div className={chatClasses}>
-        <p>{chat?.content}</p>
+        <p className="">{chat?.content}</p>
       </div>
     </div>
   );

@@ -51,12 +51,14 @@ const ChatRoom = () => {
     // fetchChats();
     fetchOtherUser();
     connectSocket();
-    emitEvent("fetch-messages", chat_id);
-    listenToEvent("last-30-messages", (message) => {
-      console.log("The Mess", message);
-      setChats(message);
-    });
-    listenToEvent("new-message", (message) => {
+    emitEvent("fetch-messages" + userContext?.user?.user_id, chat_id);
+    listenToEvent(
+      "last-30-messages" + userContext?.user?.user_id,
+      (message) => {
+        setChats(message);
+      }
+    );
+    listenToEvent("new-message" + userContext?.user?.user_id, (message) => {
       setChats((prevMessages) => [...prevMessages, message]);
       if (lastMessageRef.current) {
         lastMessageRef.current.scrollIntoView({
@@ -66,8 +68,8 @@ const ChatRoom = () => {
     });
 
     return () => {
-      removeEventListener("last-30-messages");
-      removeEventListener("new-message");
+      removeEventListener("last-30-messages" + userContext?.user?.user_id);
+      removeEventListener("new-message" + userContext?.user?.user_id);
       disconnectSocket();
     };
   }, [chat_id]);
@@ -75,11 +77,16 @@ const ChatRoom = () => {
   return (
     <div className="min-h-lvh">
       <ChatHeader name={otherUser?.name} />
-      <div className="min-h-lvh py-16 pb-24">
+      <div className="min-h-lvh my-16 mb-24">
         <div className="overflow-y-scroll ">
           {chats.length > 0 &&
             chats.map((chat, index) => (
               <div key={index}>
+                {index === 0 && chats.length >= 30 && (
+                  <p className="text-center bg-gray-300">
+                    Last {chats.length} messages
+                  </p>
+                )}
                 <SingleChat chat={chat} />
                 {index === chats.length - 1 && (
                   <div ref={lastMessageRef}>
@@ -100,6 +107,7 @@ const ChatRoom = () => {
           )}
         </div>
         <SendChat
+          user_id={userContext?.user?.user_id}
           lastMessageRef={lastMessageRef}
           chatId={chat_id}
           receiverId={otherUser?.user_id}

@@ -7,7 +7,7 @@ export const connectSocket = () => {
         socket = io(baseURL,
             {
                 auth: {
-                    token, // Attach the token
+                    token, 
                 },
             }
         );

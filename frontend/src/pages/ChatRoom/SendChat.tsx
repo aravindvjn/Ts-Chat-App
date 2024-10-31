@@ -3,7 +3,7 @@ import React, { useState, useRef, FormEvent } from "react";
 import { ChatHeaderProps } from "./ChatHeader";
 import { emitEvent } from "../../global/Socket/socketService";
 
-const SendChat: React.FC<ChatHeaderProps> = ({ receiverId, chatId,lastMessageRef }) => {
+const SendChat: React.FC<ChatHeaderProps> = ({ receiverId, chatId,lastMessageRef,user_id }) => {
   const [message, setMessage] = useState<string>("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -21,7 +21,7 @@ const SendChat: React.FC<ChatHeaderProps> = ({ receiverId, chatId,lastMessageRef
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    emitEvent("send-message", {
+    emitEvent("send-message"+user_id, {
       chat_id: chatId,
       receiver_id: receiverId,
       message: message,

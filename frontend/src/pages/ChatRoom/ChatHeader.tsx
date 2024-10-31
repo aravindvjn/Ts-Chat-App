@@ -6,6 +6,7 @@ export type ChatHeaderProps = {
   name?: string | undefined;
   receiverId?: string | undefined;
   chatId?: string | undefined;
+  user_id?: string | undefined;
   lastMessageRef?: React.RefObject<HTMLDivElement> | undefined;
 };
 const ChatHeader = ({ name }: ChatHeaderProps) => {

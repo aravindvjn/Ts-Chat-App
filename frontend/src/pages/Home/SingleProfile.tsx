@@ -83,8 +83,8 @@ const SingleProfile = ({ chat }: SingleProfileProps) => {
           : ""
       }`}
     >
-      <div className="overflow-hidden px-2 w-1/2 relative text-[12px]">
-        <p className="pb-1 font-semibold text-[14px]">{chat?.friend_name}</p>
+      <div className="overflow-hidden px-2 w-1/2 relative text-[14px]">
+        <p className="pb-1 font-semibold text-[16px]">{chat?.friend_name}</p>
         <p
           className={`bottom-0 opacity-80 ${
             userContext?.user?.user_id !== chat?.last_message_sender_id &&
