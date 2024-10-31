@@ -22,21 +22,42 @@ function App() {
         <Route path="/login" element={<Auth />} />
         <Route path="/register/set-profile" element={<SetProfile />} />
         <Route path="/register" element={<Auth />} />
+        <Route path="*" element={<Auth />} />
       </Routes>
     );
   }
+
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={userData?.user ? <Home /> : <Auth />} />
         <Route path="/login" element={<Auth />} />
-        <Route path="/register/set-profile" element={<SetProfile />} />
+        <Route
+          path="/register/set-profile"
+          element={userData?.user ? <SetProfile /> : <Auth />}
+        />
         <Route path="/register" element={<Auth />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/chat-room/:chat_id" element={<ChatRoom />} />
-        <Route path="/profile-user/:id" element={<OtherProfiles />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/user-profile" element={<UserProfile />} />
+        <Route
+          path="/notifications"
+          element={userData?.user ? <Notifications /> : <Auth />}
+        />
+        <Route
+          path="/chat-room/:chat_id"
+          element={userData?.user ? <ChatRoom /> : <Auth />}
+        />
+        <Route
+          path="/profile-user/:id"
+          element={userData?.user ? <OtherProfiles /> : <Auth />}
+        />
+        <Route
+          path="/search"
+          element={userData?.user ? <Search /> : <Auth />}
+        />
+        <Route
+          path="/user-profile"
+          element={userData?.user ? <UserProfile /> : <Auth />}
+        />
+         <Route path="*" element={<Auth />} />
       </Routes>
       {!noFooter && <Footer />}
     </>
