@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { chatURL } from "../../global/Links/Links";
 import SingleProfile from "./SingleProfile";
+import Suggested from "../Search/Suggested";
 
 interface Chat {
   chat_id: string;
@@ -17,6 +18,7 @@ interface Chat {
 
 const AllProfiles: React.FC = () => {
   const [chatFriends, setChatFriends] = useState<Chat[]>([]);
+  const [message, setMessage] = useState<string | null>("");
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -29,8 +31,12 @@ const AllProfiles: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        const data: Chat[] = await response.json();
-        setChatFriends(data);
+        const data = await response.json();
+        if (response.status === 200) {
+          setChatFriends(data);
+        } else {
+          setMessage(data.message);
+        }
       } catch (err) {
         console.error("Error in Fetching chat Profiles", err);
       }
@@ -45,6 +51,12 @@ const AllProfiles: React.FC = () => {
         chatFriends.map((chat, index) => {
           return <SingleProfile key={index} chat={chat} />;
         })}
+      {message === "Add New Friends." && (
+        <div className="p-5">
+          <p className="text-center font-bold">{message}</p>
+          <Suggested />
+        </div>
+      )}
     </div>
   );
 };

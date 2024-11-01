@@ -11,13 +11,14 @@ import { useContext, useEffect } from "react";
 import Notifications from "./pages/Notifications/Notifications";
 import OtherProfiles from "./pages/OtherProfiles/OtherProfiles";
 import { getUserData } from "./global/UserData/UserData";
+import EditYourProfile from "./pages/UserProfile/EditYourProfile";
 
 function App() {
   const location = useLocation();
   const currentLocation = location.pathname.split("/")[1];
   const userData = useContext(UserContext);
   useEffect(() => {
-    console.log("Fetch")
+    console.log("Fetch");
     const fetchUser = async () => {
       const user = await getUserData();
       userData?.setUser(user);
@@ -51,6 +52,10 @@ function App() {
         <Route
           path="/user-profile"
           element={userData?.user ? <UserProfile /> : <Auth />}
+        />
+        <Route
+          path="/edit-your-profile"
+          element={userData?.user ? <EditYourProfile /> : <Auth />}
         />
         {/* <Route path="*" element={<Auth />} /> */}
       </Routes>

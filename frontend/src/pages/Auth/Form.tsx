@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useContext, useState } from "react";
 import Input from "../../components/Input/Input";
 import { AuthProps } from "./Auth";
 import { FormProps } from "./type";
@@ -7,9 +7,13 @@ import { useNavigate } from "react-router-dom";
 import PopUp from "../../components/PopUp/PopUp";
 import handleSubmit from "./handleSubmit";
 import { AppName } from "../../global/Links/Links";
+import { UserContext } from "../../global/Context/UserContext";
+import Loading from "../../components/Loading/Loading";
 
 const Form = ({ page = "Login" }: AuthProps) => {
   const navigate = useNavigate();
+  const userContext = useContext(UserContext);
+  const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [input, setInput] = useState<FormProps>({
     name: "",
@@ -28,7 +32,10 @@ const Form = ({ page = "Login" }: AuthProps) => {
   const handleSubmitCheck = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (page === "Register") {
-      if (
+      const check=/^[a-z0-9_]+$/
+      if (!check.test(input.username)) {
+        setMessage("Username must contain only lowercase letters, numbers, and underscores.")
+      } else if (
         !input.name ||
         !input.password ||
         !input.username ||
@@ -47,12 +54,22 @@ const Form = ({ page = "Login" }: AuthProps) => {
         });
       }
     } else {
-      console.log("login");
+      setLoading(true);
       const response = await handleSubmit(input, "login");
       if (response.status) {
+        userContext?.setUser({
+          username: response.data.username,
+          bio: response.data.bio,
+          created_at: response.data.created_at,
+          profile_pic_url: response.data.profile_pic_url,
+          user_id: response.data.user_id,
+          name: response.data.name,
+        });
         navigate("/");
+        setLoading(false);
       } else {
-        console.log(response.message);
+        setMessage(response.message);
+        setLoading(false);
       }
     }
   };
@@ -66,6 +83,7 @@ const Form = ({ page = "Login" }: AuthProps) => {
       onSubmit={handleSubmitCheck}
       className="flex flex-col gap-3 px-10 sm:w-[500px]"
     >
+      {loading && <Loading />}
       {message && <PopUp message={message} setMessage={setMessage} />}
       <p className="text- text-center font-bold">{AppName}</p>
       <p className="text-center">

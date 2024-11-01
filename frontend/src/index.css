@@ -2,6 +2,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer utilities {
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animation-delay-800 {
+    animation-delay: 800ms;
+  }
+}
 
 
 :root {

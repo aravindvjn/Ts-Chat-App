@@ -3,6 +3,7 @@ import Avatar from "../../components/Avatar/Avatar";
 import { UserContext } from "../../global/Context/UserContext";
 import { useNavigate } from "react-router-dom";
 import Logout from "./Logout";
+import { Edit } from "@mui/icons-material";
 
 const ProfileData = () => {
   const userData = useContext(UserContext);
@@ -10,17 +11,38 @@ const ProfileData = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col justify-center gap-2 items-center">
+    <div className="flex flex-col justify-center gap-2 items-center pb-24">
       {user ? (
         <>
           <Avatar variant="double" src={user.profile_pic_url} />
-          <div className="text-left w-full flex flex-col gap-1 mb-5">
+          <div className="text-left w-full flex flex-col gap-1 mb-5 text-gray-600">
             <p>Name: {user.name}</p>
             <p>Username: @{user.username}</p>
             <p>Bio: {user.bio || "No bio available"}</p>
             <p>Joined on: {new Date(user.created_at).toLocaleDateString()}</p>
           </div>
-          <Logout />
+          <div className="w-full">
+            <p className="text-gray-600 py-1">Edit Your Profile</p>
+            <div
+              onClick={() => {
+                navigate("/edit-your-profile");
+              }}
+              className="flex mb-5 w-24 justify-center gap-2 items-center h-10 border-2 border-purple-800 text-purple-800 rounded-lg"
+            >
+              <Edit className="" />
+              <p>Edit</p>
+            </div>
+            <p className="text-gray-600 py-1">Chane your Password</p>
+            <div
+              onClick={() => {}}
+              className="flex mb-5 w-56 justify-center gap-2 items-center h-10 border-2 border-purple-800 text-purple-800 rounded-lg"
+            >
+              <Edit className="" />
+              <p>Chane your Password</p>
+            </div>
+            <p className="text-gray-600 py-1">Logout your account.</p>
+            <Logout />
+          </div>
         </>
       ) : (
         <button

@@ -45,7 +45,15 @@ router.post("/register", async (req, res) => {
 
     const token = generateToken(newUser.rows[0].user_id);
 
-    res.status(201).json({ token });
+    res.status(201).json({
+      token,
+      username: newUser.rows[0].username,
+      bio: newUser.rows[0].bio,
+      created_at: newUser.rows[0].created_at,
+      profile_pic_url: newUser.rows[0].profile_pic_url,
+      user_id: newUser.rows[0].user_id,
+      name: newUser.rows[0].name,
+    });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Server error" });
@@ -61,16 +69,24 @@ router.post("/login", async (req, res) => {
       username,
     ]);
     if (user.rows.length === 0) {
-      return res.status(400).json({ message: "Invalid username or password" });
+      return res.status(400).json({ message: "Invalid username." });
     }
     const isMatch = await bcrypt.compare(password, user.rows[0].password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid username or password" });
+      return res.status(400).json({ message: "Incorrect password." });
     }
 
     const token = generateToken(user.rows[0].user_id);
 
-    res.status(200).json({ token });
+    res.status(200).json({
+      token,
+      username: user.rows[0].username,
+      bio: user.rows[0].bio,
+      created_at: user.rows[0].created_at,
+      profile_pic_url: user.rows[0].profile_pic_url,
+      user_id: user.rows[0].user_id,
+      name: user.rows[0].name,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -90,7 +106,7 @@ export const verifyUser = (req, res, next) => {
 };
 
 //get user
-router.get("/user-data",verifyUser, async (req, res) => {
+router.get("/user-data", verifyUser, async (req, res) => {
   try {
     const response = await client.query(
       "SELECT username, user_id, bio, created_at, profile_pic_url, name FROM users WHERE user_id = $1",
@@ -118,6 +134,52 @@ export const verifyToken = (socket, next) => {
     }
   });
 };
-
-
+//Change user name
+router.post("/change-mypass", verifyUser, async (req, res) => {
+  try {
+    const { oldpassword, newpassword } = req.body;
+    const user = await client.query("SELECT * FROM users WHERE user_id = $1", [
+      req.user.id,
+    ]);
+    if (user.rows.length > 0) {
+      const isMatch = await bcrypt.compare(oldpassword, user.rows[0].password);
+      if (!isMatch) {
+        const newPass = await client.query(
+          "UPDATE users SET password = $1 WHERE user_id = $2 RETURNING user_id",
+          [newpassword, req.user.id]
+        );
+        if (newPass.rows.length > 0) {
+          res.status(200).json({ message: "Successfully updated password." });
+        } else {
+          res.status(201).json({ message: "Failed to update password." });
+        }
+      } else {
+        res.status(202).json({ message: "Incorrect Old Password." });
+      }
+    } else {
+      res.status(400).json({ message: "Something went wrong." });
+    }
+  } catch (err) {
+    console.error("Error in updating password.");
+    res.status(500).json({ message: "Server issue." });
+  }
+});
+//update Profile
+router.post("/change-details", verifyUser, async (req, res) => {
+  try {
+    const { name, bio = null, profile_pic_url = null } = req.body;
+    const results = await client.query(
+      " UPDATE users SET name = $1, bio = $2, profile_pic_url = $3 WHERE user_id = $4 RETURNING *",
+      [name, bio, profile_pic_url, req.user.id]
+    );
+    if (results.rows.length > 0) {
+      res.status(200).json({ message: "Profile Updated Successfully." });
+    } else {
+      res.status(400).json({ message: "Failed to update profile." });
+    }
+  } catch (err) {
+    console.error("Error in updating Profile.");
+    res.status(500).json({ message: "Server issue." });
+  }
+});
 export default router;

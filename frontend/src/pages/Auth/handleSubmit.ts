@@ -13,9 +13,8 @@ const handleSubmit = async (input: FormProps, page: string) => {
         const data = await response.json()
         console.log(data)
         if (response.ok) {
-            console.log(data.token)
             localStorage.setItem("token", data.token)
-            return { status: true }
+            return { status: true, data: data }
         } else {
             console.log(data.message)
             return { status: false, message: data.message }

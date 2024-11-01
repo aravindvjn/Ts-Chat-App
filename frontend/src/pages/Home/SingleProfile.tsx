@@ -4,6 +4,7 @@ import { SingleProfileProps } from "./type";
 import { chatURL } from "../../global/Links/Links";
 import { useContext } from "react";
 import { UserContext } from "../../global/Context/UserContext";
+import { connectSocket } from "../../global/Socket/socketService";
 
 const SingleProfile = ({ chat }: SingleProfileProps) => {
   const userContext = useContext(UserContext);

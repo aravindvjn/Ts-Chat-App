@@ -4,10 +4,14 @@ import { uploadProfilePicture } from "../../firebase/firebase";
 import handleSubmit from "./handleSubmit";
 import { useState } from "react";
 import { FormProps } from "./type";
+import Loading from "../../components/Loading/Loading";
+import PopUp from "../../components/PopUp/PopUp";
 
 const SetProfile = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [message, setMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const { state } = location;
   const [input, setInput] = useState<FormProps>({
     name: "",
@@ -23,6 +27,7 @@ const SetProfile = () => {
 
     if (fileList && fileList.length > 0) {
       const file = fileList[0];
+      setLoading(true);
       uploadProfilePicture(file, input.username).then((url) => {
         if (url) {
           console.log("Profile picture URL:", url);
@@ -30,6 +35,7 @@ const SetProfile = () => {
             ...input,
             profile_pic_url: url,
           });
+          setLoading(false);
         }
       });
     } else {
@@ -45,17 +51,22 @@ const SetProfile = () => {
 
   //create account
   const submitHandler = async () => {
+    setLoading(true);
     const response = await handleSubmit(input, "Register");
     if (response.status) {
+      setLoading(false);
       navigate("/");
     } else {
-      console.log(response.message);
+      setMessage(response.message);
+      setLoading(false);
     }
   };
   return (
     <div className="bg-black min-h-lvh flex justify-center items-center flex-col">
+      {message && <PopUp message={message} setMessage={setMessage} />}
+      {loading && <Loading />}
       <p className="text-white">Profile Picture</p>
-      <Avatar src={input.profile_pic_url} className="w-[224px] h-[180px]" />
+      <Avatar src={input.profile_pic_url} variant="double" />
       <label
         htmlFor="photo-upload"
         className="mt-5 flex flex-col items-center justify-center w-1/3 h-16 bg-gray-50 rounded-lg border-4 border-dashed border-gray-300 cursor-pointer hover:bg-gray-100"

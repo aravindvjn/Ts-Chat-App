@@ -3,11 +3,11 @@ import { baseURL } from '../Links/Links';
 let socket: Socket | null = null;
 const token = localStorage.getItem("token")
 export const connectSocket = () => {
-    if (!socket) {
+    while (!socket?.connect) {
         socket = io(baseURL,
             {
                 auth: {
-                    token, 
+                    token,
                 },
             }
         );

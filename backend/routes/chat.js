@@ -101,7 +101,7 @@ router.get("/user-all-chats", verifyUser, async (req, res) => {
     if (results.rows.length > 0) {
       res.status(200).json(results.rows);
     } else {
-      res.status(404).json({ message: "No chats found for this user." });
+      res.status(201).json({ message: "Add New Friends." });
     }
   } catch (err) {
     console.error("Error in fetching chats:", err);
