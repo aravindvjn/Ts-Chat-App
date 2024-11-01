@@ -19,6 +19,23 @@ client
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.SECRET, { expiresIn: "1h" });
 };
+
+//Check username status
+router.post("/check-username-status", async (req, res) => {
+  try {
+    const { username } = req.body;
+    const results = await client.query(
+      "SELECT  user_id FROM users WHERE username=$1",
+      [username]
+    );
+    if (results.rows.length > 0) {
+      res.status(200).json({ message: "User already exists" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Server issue." });
+  }
+});
+
 // Register route
 router.post("/register", async (req, res) => {
   const {
@@ -29,12 +46,20 @@ router.post("/register", async (req, res) => {
     profile_pic_url = null,
   } = req.body;
   try {
+    const check = /^[a-z0-9_]{7,}$/;
+    if (!check.test(username)) {
+      return res
+        .status(400)
+        .json({
+          message:
+            "The username must contain only lowercase letters, numbers, and underscores, and be more than 6 characters long.",
+        });
+    }
     const userCheck = await client.query(
       "SELECT * FROM users WHERE username = $1",
       [username]
     );
     if (userCheck.rows.length > 0) {
-      console.log("User already exists");
       return res.status(400).json({ message: "Username already exists" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -143,10 +168,11 @@ router.post("/change-mypass", verifyUser, async (req, res) => {
     ]);
     if (user.rows.length > 0) {
       const isMatch = await bcrypt.compare(oldpassword, user.rows[0].password);
-      if (!isMatch) {
+      if (isMatch) {
+        const hashedPassword = await bcrypt.hash(newpassword, 10);
         const newPass = await client.query(
           "UPDATE users SET password = $1 WHERE user_id = $2 RETURNING user_id",
-          [newpassword, req.user.id]
+          [hashedPassword, req.user.id]
         );
         if (newPass.rows.length > 0) {
           res.status(200).json({ message: "Successfully updated password." });
@@ -160,7 +186,7 @@ router.post("/change-mypass", verifyUser, async (req, res) => {
       res.status(400).json({ message: "Something went wrong." });
     }
   } catch (err) {
-    console.error("Error in updating password.");
+    console.error("Error in updating password.",err);
     res.status(500).json({ message: "Server issue." });
   }
 });

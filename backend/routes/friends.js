@@ -16,7 +16,6 @@ client
   .catch((err) => console.error("Connection error", err.stack));
 
 //Search Friends
-// Search endpoint
 router.get("/search-user", async (req, res) => {
   const searchQuery = req.query.search;
 
@@ -138,6 +137,32 @@ router.post("/friend-request/:request_id", verifyUser, async (req, res) => {
     }
   } catch (err) {
     console.error("Error in accepting friend request:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+//Remove a friend
+router.delete("/remove-friend/:chat_id", verifyUser, async (req, res) => {
+  const chat_id = req.params.chat_id;
+  try {
+    await client.query(
+      "DELETE FROM messages WHERE chat_id = $1 AND (sender_id=$2 OR receiver_id=$2)",
+      [chat_id, req.user.id]
+    );
+
+    const result = await client.query(
+      "DELETE FROM chats WHERE chat_id = $1 AND (user1_id = $2 OR user2_id = $2)",
+      [chat_id, req.user.id]
+    );
+
+    if (result.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "Chat not found or not authorized." });
+    }
+
+    res.status(200).json({ message: "Removed Friend." });
+  } catch (err) {
+    console.error("Error Removing:", err);
     res.status(500).json({ message: "Server error" });
   }
 });

@@ -6,7 +6,7 @@ import Action from "./Action";
 import { useNavigate } from "react-router-dom";
 import PopUp from "../../components/PopUp/PopUp";
 import handleSubmit from "./handleSubmit";
-import { AppName } from "../../global/Links/Links";
+import { AppName, authURL } from "../../global/Links/Links";
 import { UserContext } from "../../global/Context/UserContext";
 import Loading from "../../components/Loading/Loading";
 
@@ -32,9 +32,11 @@ const Form = ({ page = "Login" }: AuthProps) => {
   const handleSubmitCheck = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (page === "Register") {
-      const check=/^[a-z0-9_]+$/
+      const check = /^[a-z0-9_]{7,}$/;
       if (!check.test(input.username)) {
-        setMessage("Username must contain only lowercase letters, numbers, and underscores.")
+        setMessage(
+          "The username must contain only lowercase letters, numbers, and underscores, and be more than 6 characters long."
+        );
       } else if (
         !input.name ||
         !input.password ||
@@ -49,9 +51,25 @@ const Form = ({ page = "Login" }: AuthProps) => {
           "Password do not match. Please make sure both fields are identical"
         );
       } else {
-        navigate("/register/set-profile", {
-          state: input,
-        });
+        if (input.username.length >= 6 && page === "Register") {
+          const fetchStatus = async () => {
+            const response = await fetch(authURL + "check-username-status", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ username: input.username }),
+            });
+            if (response.status === 200) {
+              setMessage("Username already exists.");
+            } else {
+              navigate("/register/set-profile", {
+                state: input,
+              });
+            }
+          };
+          fetchStatus();
+        }
       }
     } else {
       setLoading(true);
@@ -105,6 +123,7 @@ const Form = ({ page = "Login" }: AuthProps) => {
         name="username"
         onChange={handleChange}
       />
+
       <Input
         type="password"
         placeholder="Password"

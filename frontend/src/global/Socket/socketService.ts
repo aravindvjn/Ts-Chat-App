@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { baseURL } from '../Links/Links';
-let socket: Socket | null = null;
+export let socket: Socket | null = null;
 const token = localStorage.getItem("token")
 export const connectSocket = () => {
     while (!socket?.connect) {

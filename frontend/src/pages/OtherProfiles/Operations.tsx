@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AddFriendButton from "../../components/AddFriendButton/AddFriendButton";
 import { friendURL } from "../../global/Links/Links";
 import AddFriend from "./AddFriend";
 import AcceptOrReject from "./AcceptOrReject";
 import RemoveOrMessage from "./RemoveOrMessage";
+import { UserContext } from "../../global/Context/UserContext";
 export type IdProps = {
   id?: string | undefined;
   reqId?: string | undefined;
@@ -16,6 +17,7 @@ export type IdProps = {
 
 const Operations = ({ id }: IdProps) => {
   const [status, setStatus] = useState({ status: "Loading", payload: "" });
+  const userContext = useContext(UserContext);
   useEffect(() => {
     const fetchFriendStatus = async () => {
       const token = localStorage.getItem("token");
@@ -39,7 +41,7 @@ const Operations = ({ id }: IdProps) => {
     };
 
     fetchFriendStatus();
-  }, [id]);
+  }, [id, userContext?.refresh]);
   if (status.status === "Loading") return <AddFriendButton status="Loading" />;
   if (status.status === "Friend") return <RemoveOrMessage id={id} />;
 

@@ -34,7 +34,9 @@ const ProfileData = () => {
             </div>
             <p className="text-gray-600 py-1">Chane your Password</p>
             <div
-              onClick={() => {}}
+              onClick={() => {
+                navigate("/change-your-password")
+              }}
               className="flex mb-5 w-56 justify-center gap-2 items-center h-10 border-2 border-purple-800 text-purple-800 rounded-lg"
             >
               <Edit className="" />

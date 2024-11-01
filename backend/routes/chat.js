@@ -108,7 +108,23 @@ router.get("/user-all-chats", verifyUser, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
+//get chat id by users
+router.get("/get-chat_id/:user2", verifyUser, async (req, res) => {
+  try {
+    const { user2 } = req.params;
+    const chat_id =await  client.query(
+      "SELECT chat_id FROM chats WHERE (user1_id=$1 AND user2_id =$2) OR (user1_id=$2 AND user2_id =$1)",
+      [req.user.id, user2]
+    );
+    if (chat_id.rows.length > 0) {
+      res.status(200).json({ chat_id: chat_id.rows[0] });
+    } else {
+      res.status(400).json({ message: "Something Went Wrong." });
+    }
+  } catch (err) {
+    console.error("Error in Fetching chat id");
+  }
+});
 // Set message as read
 router.patch("/set-message-read/:message_id", verifyUser, async (req, res) => {
   const { message_id } = req.params;

@@ -1,4 +1,6 @@
+import { Password, Visibility, VisibilityOff } from "@mui/icons-material";
 import classNames from "classnames";
+import { useState } from "react";
 
 type InputProps = {
   type: "text" | "password" | "file";
@@ -22,18 +24,28 @@ const Input = ({
     {},
     className
   );
+  const [visible, setVisible] = useState<string>(type);
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col relative">
       <label htmlFor={name}>{placeholder}</label>
       <input
         id={name}
         name={name}
-        type={type}
+        type={visible}
         placeholder={placeholder}
         value={value}
         className={inputClasses}
         onChange={onChange}
       />
+      <div
+        className="absolute right-3 top-8 text-gray-500"
+        onClick={() => {
+          setVisible(visible === "password" ? "text" : "password");
+        }}
+      >
+        {type === "password" &&
+          (visible === "text" ? <Visibility /> : <VisibilityOff />)}
+      </div>
     </div>
   );
 };

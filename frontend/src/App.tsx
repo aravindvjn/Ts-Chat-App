@@ -12,10 +12,10 @@ import Notifications from "./pages/Notifications/Notifications";
 import OtherProfiles from "./pages/OtherProfiles/OtherProfiles";
 import { getUserData } from "./global/UserData/UserData";
 import EditYourProfile from "./pages/UserProfile/EditYourProfile";
+import ChangePass from "./pages/UserProfile/ChangePass";
 
 function App() {
   const location = useLocation();
-  const currentLocation = location.pathname.split("/")[1];
   const userData = useContext(UserContext);
   useEffect(() => {
     console.log("Fetch");
@@ -57,9 +57,12 @@ function App() {
           path="/edit-your-profile"
           element={userData?.user ? <EditYourProfile /> : <Auth />}
         />
+        <Route
+          path="/change-your-password"
+          element={userData?.user ? <ChangePass /> : <Auth />}
+        />
         {/* <Route path="*" element={<Auth />} /> */}
       </Routes>
-      {!currentLocation && <Footer />}
     </>
   );
 }

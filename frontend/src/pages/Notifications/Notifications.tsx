@@ -1,14 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { friendURL } from "../../global/Links/Links";
 import SingleRequest from "./SingleRequest";
 import Suggested from "../Search/Suggested";
-import { UserContext } from "../../global/Context/UserContext";
+
 import Footer from "../../components/Footer/Footer";
 
 const Notifications = () => {
-  const userContext = useContext(UserContext);
+
   const [requests, setRequests] = useState([]);
   useEffect(() => {
+    console.log("Refreshed");
     const fetchFriendRequests = async () => {
       const token = localStorage.getItem("token");
       try {
@@ -23,7 +24,9 @@ const Notifications = () => {
         const data = await response.json();
         if (response.status === 200) {
           setRequests(data);
+          console.log(data)
         } else {
+          setRequests([]);
           console.log(data.message);
         }
       } catch (err) {
@@ -32,7 +35,7 @@ const Notifications = () => {
     };
 
     fetchFriendRequests();
-  }, [userContext?.refresh]);
+  }, []);
   return (
     <div className="p-5">
       <p className="font-bold">Friend Requests</p>

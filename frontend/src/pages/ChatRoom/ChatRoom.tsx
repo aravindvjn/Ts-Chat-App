@@ -12,8 +12,8 @@ import {
   emitEvent,
   listenToEvent,
   removeEventListener,
+  socket,
 } from "../../global/Socket/socketService";
-
 const ChatRoom = () => {
   const { chat_id } = useParams();
   const userContext = useContext(UserContext);
@@ -49,8 +49,9 @@ const ChatRoom = () => {
     };
 
     fetchOtherUser();
-    connectSocket();
-    connectSocket();
+    while (!socket?.connect) {
+      connectSocket();
+    }
     emitEvent("fetch-messages" + userContext?.user?.user_id, chat_id);
     listenToEvent(
       "last-30-messages" + userContext?.user?.user_id,
