@@ -22,10 +22,10 @@ const EditYourProfile = () => {
   const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
 
-    if (fileList && fileList.length > 0) {
+    if (fileList && fileList.length > 0 && userContext?.user?.username) {
       const file = fileList[0];
       setLoading(true);
-      uploadProfilePicture(file, input.username).then((url) => {
+      uploadProfilePicture(file, userContext?.user?.username).then((url) => {
         if (url) {
           console.log("Profile picture URL:", url);
           setInput({
