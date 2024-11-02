@@ -35,7 +35,7 @@ const SendChat: React.FC<ChatHeaderProps> = ({ receiverId, chatId,lastMessageRef
   };
 
   return (
-    <div className="flex right-0 left-0 bottom-0 fixed h-fit p-3 pb-5 bg-background shadow-top items-end w-[400px] m-auto">
+    <div className="flex right-0 left-0 bottom-0 fixed h-fit p-3 pb-5 bg-background shadow-top items-end max-w-[460px] m-auto">
       <form onSubmit={handleSubmit} className="flex items-center w-full">
         <textarea
           ref={textareaRef}

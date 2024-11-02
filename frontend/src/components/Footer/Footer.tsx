@@ -31,9 +31,9 @@ const Footer = () => {
       } catch (err) {}
     };
     fetchAllFriends();
-  }, [ userContext?.refresh]);
+  }, [ userContext?.notification]);
   return (
-    <div className="flex justify-around items-center bg-secondary h-16 fixed right-0 left-0 bottom-0 shadow-top w-[400px] m-auto">
+    <div className="flex justify-around items-center bg-secondary h-16 fixed right-0 left-0 bottom-0 shadow-top max-w-[640px] m-auto">
       <Home
         className={`${footerClasses} ${pathname === "/" ? "opacity-75" : ""}`}
         fontSize="large"

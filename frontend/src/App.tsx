@@ -28,7 +28,7 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <div className="w-[400px] m-auto min-h-svh bg-background">
+    <div className="max-w-[640px] m-auto min-h-svh bg-background">
       {userData?.notification && (
         <Notification
           notification={userData?.notification}
