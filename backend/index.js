@@ -101,3 +101,4 @@ server.listen(PORT, () => {
   console.log(`Server Listening on PORT ${PORT}`);
 });
 export default pool;
+export const handler = serverless(app);
