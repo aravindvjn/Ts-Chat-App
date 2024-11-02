@@ -77,10 +77,10 @@ const ChatRoom = () => {
   }, [chat_id]);
 
   return (
-    <div className="min-h-lvh">
+    <div className="">
       <ChatHeader name={otherUser?.name} user_id={otherUser?.user_id} />
-      <div className="min-h-lvh my-16 mb-24">
-        <div className="overflow-y-scroll ">
+      <div className="my-16 mb-24">
+        <div className="overflow-y-scroll">
           {chats.length > 0 &&
             chats.map((chat, index) => (
               <div key={index}>
@@ -103,7 +103,7 @@ const ChatRoom = () => {
               </div>
             ))}
           {chats === undefined && (
-            <p className="flex justify-center items-center h-lvh">
+            <p className="flex justify-center items-center h-svh">
               No Messages
             </p>
           )}

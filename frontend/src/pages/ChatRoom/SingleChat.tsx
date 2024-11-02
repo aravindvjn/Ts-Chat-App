@@ -34,7 +34,7 @@ const SingleChat = ({ chat }: ChatsProps) => {
     navigate("/");
   }
   return (
-    <div data-aos={chat?.sender_id === context?.user?.user_id ? "slide-left" : "slide-right"}
+    <div 
       className={`flex ${
         chat?.sender_id === context?.user?.user_id ? "justify-end" : ""
       }`}

@@ -69,7 +69,7 @@ const SingleProfile = ({ chat }: SingleProfileProps) => {
             ? chat?.last_message.length > 30
               ? chat?.last_message.slice(0, 20) + "..."
               : chat?.last_message
-            : "Take to send a message."}
+            : "Tap to send a message."}
         </p>
         <p className="opacity-50">
           {chat?.last_message_time ? convertToIST(chat.last_message_time) : ""}
