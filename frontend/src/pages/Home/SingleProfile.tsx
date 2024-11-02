@@ -51,7 +51,7 @@ const SingleProfile = ({ chat }: SingleProfileProps) => {
       className={`bg-secondary text-black p-5 flex justify-between mt-1 border-b cursor-pointer ${
         userContext?.user?.user_id !== chat?.last_message_sender_id &&
         chat?.last_message_is_read === false
-          ? "bg-green-200"
+          ? "bg-green-100"
           : ""
       }`}
     >
