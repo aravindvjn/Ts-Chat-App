@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import UserProvider, { UserContext } from "./global/Context/UserContext";
-import Footer from "./components/Footer/Footer";
 import Auth from "./pages/Auth/Auth";
 import Search from "./pages/Search/Search";
 import ChatRoom from "./pages/ChatRoom/ChatRoom";
