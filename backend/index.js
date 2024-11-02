@@ -28,8 +28,6 @@ const PORT = process.env.PORT || 3000;
 const { Pool } = pkg;
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  max: 20,
-  idleTimeoutMillis: 30000, 
 });
 
 // Test database connection
@@ -37,18 +35,16 @@ pool
   .connect()
   .then(() => console.log("Connected to the database"))
   .catch((err) => console.error("Connection error", err.stack));
-
+// Error-handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
 // Middlewares
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 io.use(verifyToken);
-
-// Error-handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
 
 // Root Route
 app.get("/", (req, res) => {
@@ -84,7 +80,7 @@ io.on("connection", (socket) => {
         [chat_id, user_id, receiver_id, message]
       );
 
-      io.emit("new-message" + chat_id, result.rows[0]); 
+      io.emit("new-message" + chat_id, result.rows[0]);
     } catch (err) {
       console.error("Error inserting message:", err);
     }
