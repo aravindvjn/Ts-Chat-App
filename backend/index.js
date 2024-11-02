@@ -23,7 +23,7 @@ export const io = new Server(server, {
 });
 
 // Port
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 // Database Connection using Pool
 const { Pool } = pkg;
