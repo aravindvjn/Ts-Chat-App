@@ -28,7 +28,6 @@ const EditYourProfile = () => {
       setLoading(true);
       uploadProfilePicture(file, userContext?.user?.username).then((url) => {
         if (url) {
-          console.log("Profile picture URL:", url);
           setInput({
             ...input,
             profile_pic_url: url,
@@ -37,7 +36,7 @@ const EditYourProfile = () => {
         }
       });
     } else {
-      console.error("No file selected.");
+      userContext?.setNotification("No file selected.");
     }
   };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,13 +59,13 @@ const EditYourProfile = () => {
       const data = await response.json();
       setLoading(false);
       if (response.ok) {
-        console.log(data.message);
+        userContext?.setNotification(data.message);
         navigate("/");
       } else {
-        console.log(data.message);
+        userContext?.setNotification(data.message);
       }
     } catch (err) {
-      console.log("Error in Updating profile.");
+      userContext?.setNotification("Error in Updating profile.");
     }
   };
   return (

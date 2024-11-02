@@ -25,13 +25,10 @@ export const uploadProfilePicture = async (file: File, username: string): Promis
         console.log("Upload is " + progress + "% done");
       },
       (error) => {
-        console.error("Error uploading file:", error);
         reject(error); 
       },
       async () => {
-        console.log("File uploaded successfully!");
         const url = await getDownloadURL(storageRef);
-        console.log("File available at", url);
         resolve(url); 
       }
     );

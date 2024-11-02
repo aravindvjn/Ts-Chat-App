@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Input from "../../components/Input/Input";
 import { authURL } from "../../global/Links/Links";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading/Loading";
 import PopUp from "../../components/PopUp/PopUp";
 import ChatHeader from "../ChatRoom/ChatHeader";
+import { UserContext } from "../../global/Context/UserContext";
 
 type PasswordProps = {
   oldpassword: string | undefined;
@@ -12,6 +13,7 @@ type PasswordProps = {
   cnewpassword: string | undefined;
 };
 const ChangePass = () => {
+  const userContext = useContext(UserContext);
   const [input, setInput] = useState<PasswordProps>({
     oldpassword: "",
     newpassword: "",
@@ -22,7 +24,6 @@ const ChangePass = () => {
   const navigate = useNavigate();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [event.target.name]: event.target.value });
-    console.log(input);
   };
   const submitHandler = async () => {
     if (!input.cnewpassword || !input.newpassword || !input.oldpassword) {
@@ -50,7 +51,7 @@ const ChangePass = () => {
         });
         const data = await response.json();
         setLoading(false);
-        console.log(data.message)
+        userContext?.setNotification(data.message)
         if (response.status === 200) {
           setMessage(data.message);
           navigate("/");
@@ -58,7 +59,7 @@ const ChangePass = () => {
           setMessage(data.message);
         }
       } catch (err) {
-        console.log("Error in Updating profile.");
+        userContext?.setNotification("Error in Updating profile.");
       }
     }
   };

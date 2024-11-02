@@ -6,7 +6,6 @@ export const convertToIST = (utcDate: string): string => {
   const date = new Date(utcDate);
 
   if (isNaN(date.getTime())) {
-    console.error("Invalid date string:", utcDate);
     return "Invalid date";
   }
 

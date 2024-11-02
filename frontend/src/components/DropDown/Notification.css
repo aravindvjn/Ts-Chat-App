@@ -1,0 +1,21 @@
+@keyframes notification-animation {
+    0% {
+        transform: translateY(-100%);
+    }
+
+    20% {
+        transform: translateY(0%);
+    }
+
+    80% {
+        transform: translateY(0%);
+    }
+
+    100% {
+        transform: translateY(-100%);
+    }
+}
+
+.notification {
+    animation: notification-animation 3s forwards;
+}

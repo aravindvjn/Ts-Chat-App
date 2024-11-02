@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AddFriendButton from "../../components/AddFriendButton/AddFriendButton";
 import { friendURL } from "../../global/Links/Links";
 import { IdProps } from "./Operations";
+import { UserContext } from "../../global/Context/UserContext";
 
 const AddFriend = ({ id }: IdProps) => {
   const [status, setStatus] = useState(false);
+  const userContext = useContext(UserContext);
+
   const addToFriend = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -19,14 +22,14 @@ const AddFriend = ({ id }: IdProps) => {
       });
       const data = await response.json();
       if (response.ok) {
-        console.log(data.message);
+        userContext?.setNotification(data.message);
         setStatus(true);
       } else {
-        console.log(data.message);
+        userContext?.setNotification(data.message);
         setStatus(false);
       }
     } catch (err) {
-      console.log("Error in adding a friend.");
+      userContext?.setNotification("Error in adding a friend.");
       setStatus(false);
     }
   };

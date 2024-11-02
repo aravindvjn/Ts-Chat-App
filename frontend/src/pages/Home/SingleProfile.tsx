@@ -12,27 +12,21 @@ const SingleProfile = ({ chat }: SingleProfileProps) => {
 
   const markMessageAsRead = async (messageId: string) => {
     try {
-      const response = await fetch(chatURL + `/set-message-read/${messageId}`, {
+      await fetch(chatURL + `/set-message-read/${messageId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        console.log(data.message);
-      } else {
-        console.log("Something went wrong at Set Message as read.");
-      }
     } catch (error) {
       console.error("Error marking message as read:", error);
     }
   };
 
   return (
-    <div data-aos="slide-right"
+    <div
+      data-aos="slide-right"
       onClick={() => {
         navigate("chat-room/" + chat?.chat_id);
         if (
@@ -41,11 +35,7 @@ const SingleProfile = ({ chat }: SingleProfileProps) => {
         ) {
           markMessageAsRead(chat.last_message_id);
         } else {
-          console.log(
-            "wrong",
-            userContext?.user?.user_id,
-            chat?.last_message_sender_id
-          );
+          console.log("wrong");
         }
       }}
       className={`bg-secondary text-black p-5 flex justify-between mt-1 border-b cursor-pointer ${

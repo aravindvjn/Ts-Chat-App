@@ -1,8 +1,11 @@
 import AddFriendButton from "../../components/AddFriendButton/AddFriendButton";
 import { IdProps } from "./Operations";
 import { friendURL } from "../../global/Links/Links";
+import { useContext } from "react";
+import { UserContext } from "../../global/Context/UserContext";
 
 const AcceptOrReject = ({ reqId }: IdProps) => {
+  const userContext = useContext(UserContext);
   const updateReq = async (action: string) => {
     const token = localStorage.getItem("token");
     try {
@@ -15,9 +18,9 @@ const AcceptOrReject = ({ reqId }: IdProps) => {
         },
       });
       const data = await response.json();
-        console.log(data.message);
+      userContext?.setNotification(data.message);
     } catch (err) {
-      console.log("Error in adding a friend.");
+      userContext?.setNotification("Error in adding a friend.");
     }
   };
   return (

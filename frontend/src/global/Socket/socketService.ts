@@ -3,7 +3,7 @@ import { baseURL } from '../Links/Links';
 export let socket: Socket | null = null;
 export const connectSocket = () => {
     while (!socket?.connect) {
-        console.log("connecting in socket service.")
+        // console.log("connecting in socket service.")
         socket = io(baseURL,
             {
                 auth: {
@@ -11,14 +11,14 @@ export const connectSocket = () => {
                 },
             }
         );
-        console.log('Connected to Socket.IO server');
+        // console.log('Connected to Socket.IO server');
     }
 };
 export const disconnectSocket = () => {
     if (socket) {
         socket.disconnect();
         socket = null;
-        console.log('Disconnected from Socket.IO server');
+        // console.log('Disconnected from Socket.IO server');
     }
 };
 

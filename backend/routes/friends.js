@@ -6,13 +6,16 @@ import dotenv from "dotenv";
 dotenv.config();
 
 //Database
-const { Client } = pkg;
-const client = new Client({
+const { Pool } = pkg;
+export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
-client
+
+
+// Test database connection
+pool
   .connect()
-  .then(() => console.log("Connected to the database at friends"))
+  .then(() => console.log("Connected to the database"))
   .catch((err) => console.error("Connection error", err.stack));
 
 //Search Friends
@@ -24,7 +27,7 @@ router.get("/search-user", async (req, res) => {
   }
 
   try {
-    const result = await client.query(
+    const result = await pool.query(
       "SELECT user_id, username, name, profile_pic_url, bio,created_at FROM users WHERE name ILIKE $1 OR username ILIKE $1",
       [`%${searchQuery}%`]
     );
@@ -43,7 +46,7 @@ router.get("/search-user", async (req, res) => {
 router.get("/all-friends/:n", verifyUser, async (req, res) => {
   try {
     const { n } = req.params;
-    const results = await client.query(
+    const results = await pool.query(
       "SELECT user_id, username, name, profile_pic_url, bio FROM users WHERE user_id != $1 ORDER BY created_at DESC LIMIT $2",
       [req.user.id, n]
     );
@@ -62,7 +65,7 @@ router.get("/all-friends/:n", verifyUser, async (req, res) => {
 router.get("/single-user/:id", verifyUser, async (req, res) => {
   try {
     const { id } = req.params;
-    const results = await client.query(
+    const results = await pool.query(
       "SELECT user_id, username, name, profile_pic_url, bio,created_at FROM users WHERE user_id = $1",
       [id]
     );
@@ -81,7 +84,7 @@ router.get("/single-user/:id", verifyUser, async (req, res) => {
 router.post("/send-friend-request", verifyUser, async (req, res) => {
   const { receiver_id } = req.body;
   try {
-    const result = await client.query(
+    const result = await pool.query(
       "INSERT INTO friend_requests (sender_id, receiver_id) VALUES ($1, $2) ON CONFLICT (sender_id, receiver_id) DO NOTHING RETURNING *",
       [req.user.id, receiver_id]
     );
@@ -101,14 +104,14 @@ router.post("/send-friend-request", verifyUser, async (req, res) => {
 router.post("/friend-request/:request_id", verifyUser, async (req, res) => {
   const request_id = req.params.request_id;
   try {
-    const result = await client.query(
+    const result = await pool.query(
       "SELECT sender_id, receiver_id FROM friend_requests WHERE request_id = $1 AND receiver_id = $2 ;",
       [request_id, req.user.id]
     );
 
     if (result.rows.length > 0) {
       const { sender_id, receiver_id } = result.rows[0];
-      await client.query(
+      await pool.query(
         "DELETE FROM friend_requests WHERE request_id = $1 AND receiver_id = $2 ;",
         [request_id, req.user.id]
       );
@@ -116,14 +119,14 @@ router.post("/friend-request/:request_id", verifyUser, async (req, res) => {
       const user1_id = sender_id < receiver_id ? sender_id : receiver_id;
       const user2_id = sender_id > receiver_id ? sender_id : receiver_id;
 
-      const chatResult = await client.query(
+      const chatResult = await pool.query(
         "INSERT INTO chats (user1_id, user2_id) VALUES ($1, $2) RETURNING chat_id;",
         [user1_id, user2_id]
       );
 
       if (chatResult.rows.length > 0) {
         res.status(200).json({
-          message: "Friend request accepted and chat created.",
+          message: "Friend request accepted.",
           chat: chatResult.rows[0],
         });
       } else {
@@ -144,12 +147,12 @@ router.post("/friend-request/:request_id", verifyUser, async (req, res) => {
 router.delete("/remove-friend/:chat_id", verifyUser, async (req, res) => {
   const chat_id = req.params.chat_id;
   try {
-    await client.query(
+    await pool.query(
       "DELETE FROM messages WHERE chat_id = $1 AND (sender_id=$2 OR receiver_id=$2)",
       [chat_id, req.user.id]
     );
 
-    const result = await client.query(
+    const result = await pool.query(
       "DELETE FROM chats WHERE chat_id = $1 AND (user1_id = $2 OR user2_id = $2)",
       [chat_id, req.user.id]
     );
@@ -171,7 +174,7 @@ router.delete("/remove-friend/:chat_id", verifyUser, async (req, res) => {
 router.delete("/friend-request/:request_id", verifyUser, async (req, res) => {
   const request_id = req.params.request_id;
   try {
-    await client.query(
+    await pool.query(
       "DELETE FROM friend_requests WHERE request_id = $1 AND (sender_id = $2 OR receiver_id = $2);",
       [request_id, req.user.id]
     );
@@ -187,7 +190,7 @@ router.delete("/friend-request/:request_id", verifyUser, async (req, res) => {
 router.get("/pending-requests", verifyUser, async (req, res) => {
   const user_id = req.user.id;
   try {
-    const result = await client.query(
+    const result = await pool.query(
       `
       SELECT fr.*, u.username, u.name, u.profile_pic_url
       FROM friend_requests fr
@@ -213,7 +216,7 @@ router.get("/friend-status/:id", verifyUser, async (req, res) => {
   try {
     const { id } = req.params;
     const user_id = req.user.id;
-    const checkFriend = await client.query(
+    const checkFriend = await pool.query(
       "SELECT * FROM chats WHERE (user1_id = $1 AND user2_id = $2) OR (user1_id = $2 AND user2_id = $1)",
       [user_id, id]
     );
@@ -221,7 +224,7 @@ router.get("/friend-status/:id", verifyUser, async (req, res) => {
       return res.status(200).json({ status: "Friend" });
     }
 
-    const checkRequest = await client.query(
+    const checkRequest = await pool.query(
       "SELECT * FROM friend_requests WHERE (sender_id = $1 AND receiver_id = $2 AND status = 'pending') OR (sender_id = $2 AND receiver_id = $1 AND status = 'pending')",
       [user_id, id]
     );

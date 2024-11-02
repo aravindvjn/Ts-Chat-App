@@ -11,12 +11,10 @@ const handleSubmit = async (input: FormProps, page: string) => {
             body: JSON.stringify(input)
         })
         const data = await response.json()
-        console.log(data)
         if (response.ok) {
             localStorage.setItem("token", data.token)
             return { status: true, data: data }
         } else {
-            console.log(data.message)
             return { status: false, message: data.message }
         }
 

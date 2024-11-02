@@ -16,17 +16,20 @@ type UserProviderProps = {
 export type ContextProps = {
   user: UserProps | null;
   setUser: (user: UserProps | null) => void;
-  refresh: boolean;
-  setRefresh: (refresh: boolean) => void;
+  notification: string;
+  setNotification: (notification: string) => void;
 };
 
 export const UserContext = createContext<ContextProps | null>(null);
 
 const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<UserProps | null>(null);
-  const [refresh, setRefresh] = useState<boolean>(false);
+  const [notification, setNotification] = useState<string>("");
 
-  const value = useMemo(() => ({ user, setUser, refresh, setRefresh }), [user]);
+  const value = useMemo(
+    () => ({ user, setUser, notification, setNotification }),
+    [user]
+  );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

@@ -41,7 +41,7 @@ const Operations = ({ id }: IdProps) => {
     };
 
     fetchFriendStatus();
-  }, [id, userContext?.refresh]);
+  }, [id]);
   if(userContext?.user?.user_id === id){
     return null;
    }

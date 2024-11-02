@@ -1,12 +1,14 @@
-
 import AddFriendButton from "../../components/AddFriendButton/AddFriendButton";
 import { IdProps } from "./Operations";
 import { chatURL, friendURL } from "../../global/Links/Links";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../global/Context/UserContext";
+import { useContext } from "react";
 
 const RemoveOrMessage = ({ id }: IdProps) => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const userContext = useContext(UserContext);
   const messageHandler = async () => {
     const chat_id = await getChatId();
     navigate("/chat-room/" + chat_id);
@@ -23,7 +25,7 @@ const RemoveOrMessage = ({ id }: IdProps) => {
     if (response.ok) {
       return data.chat_id.chat_id;
     } else {
-      console.log(data.message);
+      userContext?.setNotification(data.message);
     }
   };
   const removeFriend = async () => {
@@ -38,12 +40,12 @@ const RemoveOrMessage = ({ id }: IdProps) => {
       });
       const data = await response.json();
       if (response.ok) {
-        console.log(data.message);;
+        userContext?.setNotification(data.message);
       } else {
-        console.log(data.message);
+        userContext?.setNotification(data.message);
       }
     } catch (err) {
-      console.log("Error in removing a friend.");
+      userContext?.setNotification("Error in removing a friend.");
     }
   };
   return (

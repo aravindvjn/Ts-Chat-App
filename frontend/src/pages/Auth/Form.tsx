@@ -63,7 +63,6 @@ const Form = ({ page = "Login" }: AuthProps) => {
             if (response.status === 200) {
               setMessage("Username already exists.");
             } else {
-              console.log("test");
               navigate("/register/set-profile", {
                 state: input,
               });

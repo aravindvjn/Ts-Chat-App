@@ -30,7 +30,6 @@ const SetProfile = () => {
       setLoading(true);
       uploadProfilePicture(file, input.username).then((url) => {
         if (url) {
-          console.log("Profile picture URL:", url);
           setInput({
             ...input,
             profile_pic_url: url,

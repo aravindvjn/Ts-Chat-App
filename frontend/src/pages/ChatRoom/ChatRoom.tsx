@@ -61,7 +61,6 @@ const ChatRoom = () => {
       }
     );
     listenToEvent("new-message" + chat_id, (message) => {
-      console.log("new");
       setChats((prevMessages) => [...prevMessages, message]);
       if (lastMessageRef.current) {
         lastMessageRef.current.scrollIntoView({

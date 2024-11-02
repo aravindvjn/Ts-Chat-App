@@ -9,7 +9,6 @@ const Notifications = () => {
 
   const [requests, setRequests] = useState([]);
   useEffect(() => {
-    console.log("Refreshed");
     const fetchFriendRequests = async () => {
       const token = localStorage.getItem("token");
       try {
@@ -24,10 +23,8 @@ const Notifications = () => {
         const data = await response.json();
         if (response.status === 200) {
           setRequests(data);
-          console.log(data)
         } else {
           setRequests([]);
-          console.log(data.message);
         }
       } catch (err) {
         console.log("Error in fetcing friend status", err);

@@ -14,12 +14,12 @@ import EditYourProfile from "./pages/UserProfile/EditYourProfile";
 import ChangePass from "./pages/UserProfile/ChangePass";
 import AboutApp from "./pages/About/AboutApp";
 import AboutUs from "./pages/About/AboutUs";
+import Notification from "./components/DropDown/Notification";
 
 function App() {
   const location = useLocation();
   const userData = useContext(UserContext);
   useEffect(() => {
-    console.log("Fetch");
     const fetchUser = async () => {
       const user = await getUserData();
       userData?.setUser(user);
@@ -29,6 +29,12 @@ function App() {
 
   return (
     <div className="w-[400px] m-auto min-h-svh bg-background">
+      {userData?.notification && (
+        <Notification
+          notification={userData?.notification}
+          setNotification={userData?.setNotification}
+        />
+      )}
       <Routes>
         <Route path="/" element={userData?.user ? <Home /> : <Auth />} />
         <Route path="/login" element={<Auth />} />
