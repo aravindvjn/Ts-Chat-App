@@ -30,6 +30,8 @@ router.post("/check-username-status", async (req, res) => {
     );
     if (results.rows.length > 0) {
       res.status(200).json({ message: "User already exists" });
+    } else {
+      res.status(201).json({ message: "Good to go." });
     }
   } catch (err) {
     res.status(500).json({ message: "Server issue." });
@@ -48,12 +50,10 @@ router.post("/register", async (req, res) => {
   try {
     const check = /^[a-z0-9_]{7,}$/;
     if (!check.test(username)) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "The username must contain only lowercase letters, numbers, and underscores, and be more than 6 characters long.",
-        });
+      return res.status(400).json({
+        message:
+          "The username must contain only lowercase letters, numbers, and underscores, and be more than 6 characters long.",
+      });
     }
     const userCheck = await client.query(
       "SELECT * FROM users WHERE username = $1",
@@ -152,7 +152,7 @@ export const verifyToken = (socket, next) => {
 
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
     if (err) {
-      console.log("Invalid token",err);
+      console.log("Invalid token", err);
     } else {
       socket.user = decoded;
       next();
@@ -186,7 +186,7 @@ router.post("/change-mypass", verifyUser, async (req, res) => {
       res.status(400).json({ message: "Something went wrong." });
     }
   } catch (err) {
-    console.error("Error in updating password.",err);
+    console.error("Error in updating password.", err);
     res.status(500).json({ message: "Server issue." });
   }
 });
