@@ -62,7 +62,7 @@ const OtherProfiles = () => {
       <Share
         className="flex my-5 items-center gap-1 cursor-pointer text-blue-600"
         variant="small"
-        text={otherUser?.bio}
+        text={otherUser?.name}
         title={otherUser?.name}
         url={"/profile-user/" + otherUser?.user_id}
       >

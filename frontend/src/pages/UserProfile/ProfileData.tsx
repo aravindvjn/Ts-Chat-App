@@ -27,7 +27,7 @@ const ProfileData = () => {
               className="flex mb-5 justify-center items-center gap-1 cursor-pointer text-blue-600"
               variant="small"
               title={user?.name}
-              text={user?.bio}
+              text={user?.name}
               url={"/profile-user/" + user?.user_id}
             >
               <p>Share Your Profile</p>
