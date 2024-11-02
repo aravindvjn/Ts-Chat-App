@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 import authRouter, { verifyToken } from "./routes/auth.js";
 import friendsRouter from "./routes/friends.js";
 import chatRouter from "./routes/chat.js";
+import serverless from 'serverless-http';
 
 dotenv.config();
 const app = express();

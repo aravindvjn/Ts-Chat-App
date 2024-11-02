@@ -16,6 +16,7 @@
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.1",
+    "serverless-http": "^3.2.0",
     "socket.io": "^4.8.1"
   }
 }
