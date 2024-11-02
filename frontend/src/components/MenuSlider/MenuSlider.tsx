@@ -19,7 +19,7 @@ const MenuSlider = ({ setMenuStatus }: MenuProps) => {
     <div
       onClick={() => setMenuStatus(false)}
       data-aos="fade-in"
-      className="fixed right-0 bottom-0 top-0 left-0 z-10 backdrop-blur-sm flex justify-end bg-black/10"
+      className="fixed max-w-[640px] m-auto right-0 bottom-0 top-0 left-0 z-10 backdrop-blur-sm flex justify-end bg-black/10"
     >
       <div
         data-aos="slide-left"
