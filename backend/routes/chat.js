@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { io } from "../index.js";
 const router = Router();
 import pkg from "pg";
 import dotenv from "dotenv";
