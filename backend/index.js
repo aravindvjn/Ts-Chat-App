@@ -39,6 +39,21 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 io.use(verifyToken);
+
+// errorHandler
+const errorHandler = (err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'An unexpected error occurred';
+  console.error(`[Error] ${statusCode} - ${message}`, err);
+  res.status(statusCode).json({
+      success: false,
+      message: message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+  });
+};
+app.use(errorHandler);
+
+
 // Root Route
 app.get("/", (req, res) => {
   res.status(200).json("Hai, I am Ts Chat App API!");
