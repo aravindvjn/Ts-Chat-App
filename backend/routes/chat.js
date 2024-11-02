@@ -7,13 +7,15 @@ import { verifyUser } from "./auth.js";
 dotenv.config();
 
 // Database
-const { Client } = pkg;
-const client = new Client({
+const { Pool } = pkg;
+export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
-client
+
+// Test database connection
+pool
   .connect()
-  .then(() => console.log("Connected to the database at chat"))
+  .then(() => console.log("Connected to the database"))
   .catch((err) => console.error("Connection error", err.stack));
 
 // Get User details by chat_id
@@ -22,7 +24,7 @@ router.get("/user-details/:chat_id", verifyUser, async (req, res) => {
   const user_id = req.user.id;
 
   try {
-    const results = await client.query(
+    const results = await pool.query(
       `SELECT 
         u.user_id, 
         u.username, 
@@ -53,7 +55,7 @@ router.get("/user-all-chats", verifyUser, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const results = await client.query(
+    const results = await pool.query(
       `SELECT 
         c.chat_id, 
         CASE 
@@ -111,7 +113,7 @@ router.get("/user-all-chats", verifyUser, async (req, res) => {
 router.get("/get-chat_id/:user2", verifyUser, async (req, res) => {
   try {
     const { user2 } = req.params;
-    const chat_id =await  client.query(
+    const chat_id =await  pool.query(
       "SELECT chat_id FROM chats WHERE (user1_id=$1 AND user2_id =$2) OR (user1_id=$2 AND user2_id =$1)",
       [req.user.id, user2]
     );
@@ -130,7 +132,7 @@ router.patch("/set-message-read/:message_id", verifyUser, async (req, res) => {
   const user_id = req.user.id;
 
   try {
-    const result = await client.query(
+    const result = await pool.query(
       "UPDATE messages SET is_read = TRUE WHERE message_id = $1 AND receiver_id = $2 RETURNING *",
       [message_id, user_id]
     );

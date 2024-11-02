@@ -7,14 +7,17 @@ import dotenv from "dotenv";
 dotenv.config();
 
 //Database
-const { Client } = pkg;
-const client = new Client({
+const { Pool } = pkg;
+export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
-client
+
+// Test database connection
+pool
   .connect()
-  .then(() => console.log("Connected to the database at auth"))
+  .then(() => console.log("Connected to the database"))
   .catch((err) => console.error("Connection error", err.stack));
+
 //Generate Token
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.SECRET, { expiresIn: "1h" });
@@ -24,7 +27,7 @@ const generateToken = (userId) => {
 router.post("/check-username-status", async (req, res) => {
   try {
     const { username } = req.body;
-    const results = await client.query(
+    const results = await pool.query(
       "SELECT  user_id FROM users WHERE username=$1",
       [username]
     );
@@ -55,7 +58,7 @@ router.post("/register", async (req, res) => {
           "The username must contain only lowercase letters, numbers, and underscores, and be more than 6 characters long.",
       });
     }
-    const userCheck = await client.query(
+    const userCheck = await pool.query(
       "SELECT * FROM users WHERE username = $1",
       [username]
     );
@@ -63,7 +66,7 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Username already exists" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await client.query(
+    const newUser = await pool.query(
       "INSERT INTO users (name, username, password, bio, profile_pic_url) VALUES ($1, $2, $3, $4, $5) RETURNING user_id",
       [name, username, hashedPassword, bio, profile_pic_url]
     );
@@ -90,7 +93,7 @@ router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await client.query("SELECT * FROM users WHERE username = $1", [
+    const user = await pool.query("SELECT * FROM users WHERE username = $1", [
       username,
     ]);
     if (user.rows.length === 0) {
@@ -133,7 +136,7 @@ export const verifyUser = (req, res, next) => {
 //get user
 router.get("/user-data", verifyUser, async (req, res) => {
   try {
-    const response = await client.query(
+    const response = await pool.query(
       "SELECT username, user_id, bio, created_at, profile_pic_url, name FROM users WHERE user_id = $1",
       [req.user.id]
     );
@@ -163,14 +166,14 @@ export const verifyToken = (socket, next) => {
 router.post("/change-mypass", verifyUser, async (req, res) => {
   try {
     const { oldpassword, newpassword } = req.body;
-    const user = await client.query("SELECT * FROM users WHERE user_id = $1", [
+    const user = await pool.query("SELECT * FROM users WHERE user_id = $1", [
       req.user.id,
     ]);
     if (user.rows.length > 0) {
       const isMatch = await bcrypt.compare(oldpassword, user.rows[0].password);
       if (isMatch) {
         const hashedPassword = await bcrypt.hash(newpassword, 10);
-        const newPass = await client.query(
+        const newPass = await pool.query(
           "UPDATE users SET password = $1 WHERE user_id = $2 RETURNING user_id",
           [hashedPassword, req.user.id]
         );
@@ -194,7 +197,7 @@ router.post("/change-mypass", verifyUser, async (req, res) => {
 router.post("/change-details", verifyUser, async (req, res) => {
   try {
     const { name, bio = null, profile_pic_url = null } = req.body;
-    const results = await client.query(
+    const results = await pool.query(
       " UPDATE users SET name = $1, bio = $2, profile_pic_url = $3 WHERE user_id = $4 RETURNING *",
       [name, bio, profile_pic_url, req.user.id]
     );
