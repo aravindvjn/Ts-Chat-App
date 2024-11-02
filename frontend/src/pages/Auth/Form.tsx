@@ -114,6 +114,8 @@ const Form = ({ page = "Login" }: AuthProps) => {
           value={input.name}
           name="name"
           onChange={handleChange}
+          maxlength={20}
+          minlength={6}
         />
       )}
       <Input
@@ -122,6 +124,8 @@ const Form = ({ page = "Login" }: AuthProps) => {
         value={input.username}
         name="username"
         onChange={handleChange}
+        maxlength={15}
+        minlength={6}
       />
 
       <Input

@@ -2,10 +2,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer utilities {
   .animation-delay-400 {
     animation-delay: 400ms;
   }
+
   .animation-delay-800 {
     animation-delay: 800ms;
   }
@@ -18,4 +20,24 @@
   font-family: 'Archivo', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   box-sizing: border-box;
 
+}
+
+@keyframes pulse-gradient-fetching {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-fetching {
+  animation: pulse-gradient-fetching 1.5s ease-in-out infinite;
+  background-size: 500% 500%;
+  background-image: linear-gradient(45deg,#9d9e9e, #E0E0E0, #F5F5F5);
 }

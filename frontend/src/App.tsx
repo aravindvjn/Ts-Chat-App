@@ -13,6 +13,8 @@ import OtherProfiles from "./pages/OtherProfiles/OtherProfiles";
 import { getUserData } from "./global/UserData/UserData";
 import EditYourProfile from "./pages/UserProfile/EditYourProfile";
 import ChangePass from "./pages/UserProfile/ChangePass";
+import AboutApp from "./pages/About/AboutApp";
+import AboutUs from "./pages/About/AboutUs";
 
 function App() {
   const location = useLocation();
@@ -33,6 +35,8 @@ function App() {
         <Route path="/login" element={<Auth />} />
         <Route path="/register/set-profile" element={<SetProfile />} />
         <Route path="/register" element={<Auth />} />
+        <Route path="/about-this-app" element={<AboutApp />} />
+        <Route path="/about-us" element={<AboutUs />} />
         <Route
           path="/notifications"
           element={userData?.user ? <Notifications /> : <Auth />}

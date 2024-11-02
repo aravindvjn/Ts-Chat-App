@@ -4,40 +4,11 @@ import { SingleProfileProps } from "./type";
 import { chatURL } from "../../global/Links/Links";
 import { useContext } from "react";
 import { UserContext } from "../../global/Context/UserContext";
-import { connectSocket } from "../../global/Socket/socketService";
+import { convertToIST } from "../../global/Functions/DateConvert";
 
 const SingleProfile = ({ chat }: SingleProfileProps) => {
   const userContext = useContext(UserContext);
   const navigate = useNavigate();
-  const convertToIST = (utcDate: string): string => {
-    if (!utcDate) {
-      return "Invalid date";
-    }
-
-    const date = new Date(utcDate);
-
-    if (isNaN(date.getTime())) {
-      console.error("Invalid date string:", utcDate);
-      return "Invalid date";
-    }
-
-    const now = new Date();
-    const yesterday = new Date(now);
-    yesterday.setDate(now.getDate() - 1);
-
-    const options: Intl.DateTimeFormatOptions = {
-      timeZone: "Asia/Kolkata",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    };
-
-    if (date.toDateString() === yesterday.toDateString()) {
-      return "Yesterday";
-    }
-
-    return date.toLocaleString("en-IN", options);
-  };
 
   const markMessageAsRead = async (messageId: string) => {
     try {
@@ -61,7 +32,7 @@ const SingleProfile = ({ chat }: SingleProfileProps) => {
   };
 
   return (
-    <div
+    <div data-aos="slide-right"
       onClick={() => {
         navigate("chat-room/" + chat?.chat_id);
         if (

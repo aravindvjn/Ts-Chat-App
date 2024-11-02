@@ -1,7 +1,8 @@
 import classNames from "classnames";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../../global/Context/UserContext";
 import { useNavigate } from "react-router-dom";
+import MessageDetails from "./MessageDetails";
 
 type Message = {
   chat_id?: string;
@@ -18,6 +19,7 @@ export type ChatsProps = {
 };
 const SingleChat = ({ chat }: ChatsProps) => {
   const context = useContext(UserContext);
+  const [showDetails,setShowDetails] = useState<boolean>(false)
   const navigate = useNavigate();
   const chatClasses = classNames(
     "text-black mt-3 w-fit rounded-[12px] px-3 py-2 text-[14px] break-words  max-w-[300px] sm:max-w-[450px]",
@@ -32,12 +34,13 @@ const SingleChat = ({ chat }: ChatsProps) => {
     navigate("/");
   }
   return (
-    <div
+    <div data-aos={chat?.sender_id === context?.user?.user_id ? "slide-left" : "slide-right"}
       className={`flex ${
         chat?.sender_id === context?.user?.user_id ? "justify-end" : ""
       }`}
     >
-      <div className={chatClasses}>
+      {showDetails && <MessageDetails sent_at={chat?.sent_at} content={chat?.content} setShowDetails={setShowDetails} status={chat?.sender_id === context?.user?.user_id}/>}
+      <div onClick={()=>setShowDetails(true)} className={chatClasses}>
         <p className="">{chat?.content}</p>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { UserContext } from "../../global/Context/UserContext";
 import { useNavigate } from "react-router-dom";
 import Logout from "./Logout";
 import { Edit } from "@mui/icons-material";
+import Share from "../../components/Share/Share";
 
 const ProfileData = () => {
   const userData = useContext(UserContext);
@@ -22,6 +23,15 @@ const ProfileData = () => {
             <p>Joined on: {new Date(user.created_at).toLocaleDateString()}</p>
           </div>
           <div className="w-full">
+            <Share
+              className="flex mb-5 justify-center items-center gap-1 cursor-pointer text-blue-600"
+              variant="small"
+              title={user?.name}
+              text={user?.bio}
+              url={"/profile-user/" + user?.user_id}
+            >
+              <p>Share Your Profile</p>
+            </Share>
             <p className="text-gray-600 py-1">Edit Your Profile</p>
             <div
               onClick={() => {
@@ -35,7 +45,7 @@ const ProfileData = () => {
             <p className="text-gray-600 py-1">Chane your Password</p>
             <div
               onClick={() => {
-                navigate("/change-your-password")
+                navigate("/change-your-password");
               }}
               className="flex mb-5 w-56 justify-center gap-2 items-center h-10 border-2 border-purple-800 text-purple-800 rounded-lg"
             >

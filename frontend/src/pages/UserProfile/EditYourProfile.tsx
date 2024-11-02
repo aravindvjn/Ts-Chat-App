@@ -77,6 +77,8 @@ const EditYourProfile = () => {
         onChange={handleChange}
         value={input.name}
         name="name"
+        maxlength={20}
+        minlength={6}
       />
       <Input
         type="text"

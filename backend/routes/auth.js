@@ -152,7 +152,7 @@ export const verifyToken = (socket, next) => {
 
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
     if (err) {
-      console.log("Invalid token");
+      console.log("Invalid token",err);
     } else {
       socket.user = decoded;
       next();

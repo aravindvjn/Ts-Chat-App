@@ -1,20 +1,19 @@
 import { io, Socket } from 'socket.io-client';
 import { baseURL } from '../Links/Links';
 export let socket: Socket | null = null;
-const token = localStorage.getItem("token")
 export const connectSocket = () => {
     while (!socket?.connect) {
+        console.log("connecting in socket service.")
         socket = io(baseURL,
             {
                 auth: {
-                    token,
+                    token: localStorage.getItem("token"),
                 },
             }
         );
         console.log('Connected to Socket.IO server');
     }
 };
-
 export const disconnectSocket = () => {
     if (socket) {
         socket.disconnect();
@@ -37,7 +36,7 @@ export const listenToEvent = (event: string, callback: (...args: any[]) => void)
     }
 };
 
-// Remove event listeners (useful to prevent memory leaks)
+// Remove event listeners 
 export const removeEventListener = (event: string) => {
     if (socket) {
         socket.off(event);

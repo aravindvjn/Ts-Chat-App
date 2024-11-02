@@ -5,6 +5,8 @@ import { friendURL } from "../../global/Links/Links";
 import Avatar from "../../components/Avatar/Avatar";
 import Operations from "./Operations";
 import Footer from "../../components/Footer/Footer";
+import ChatHeader from "../ChatRoom/ChatHeader";
+import Share from "../../components/Share/Share";
 
 const OtherProfiles = () => {
   const { id } = useParams();
@@ -33,15 +35,21 @@ const OtherProfiles = () => {
     fetchAllFriends();
   }, []);
   if (!otherUser) {
-    return <p>Loading..</p>;
+    return (
+      <>
+        <ChatHeader />
+        <div className="animate-pulse text-lg text-center pt-4">Loading..</div>
+      </>
+    );
   }
   return (
-    <div className="p-5 pt-10 flex flex-col justify-center items-center">
+    <div className="p-5 pt-24 flex flex-col justify-center items-center">
+      <ChatHeader />
       <Avatar variant="double" src={otherUser?.profile_pic_url} />
+
       <p className="font-bold text-lg pt-2">{otherUser?.name}</p>
       <p className="text-gray-500">@{otherUser?.username}</p>
-
-      <div className="text-left w-full">
+      <div className="text-left mb-4 w-full">
         <p className="py-2"> {otherUser?.bio}</p>
         <p>
           Joined on:{" "}
@@ -51,6 +59,15 @@ const OtherProfiles = () => {
         </p>
       </div>
       <Operations id={id} />
+      <Share
+        className="flex my-5 items-center gap-1 cursor-pointer text-blue-600"
+        variant="small"
+        text={otherUser?.bio}
+        title={otherUser?.name}
+        url={"/profile-user/" + otherUser?.user_id}
+      >
+        <p>Share Profile</p>
+      </Share>
       <Footer />
     </div>
   );

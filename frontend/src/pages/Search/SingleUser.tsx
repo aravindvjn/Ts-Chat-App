@@ -8,7 +8,7 @@ type SingleUserProps = {
 const SingleUser = ({ user }: SingleUserProps) => {
   const navigate = useNavigate();
   return (
-    <div
+    <div data-aos="slide-right"
       className="p-2 border-b flex gap-4"
       onClick={() => navigate("/profile-user/" + user?.user_id)}
     >

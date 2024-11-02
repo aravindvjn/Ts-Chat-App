@@ -1,4 +1,4 @@
-import { Password, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import classNames from "classnames";
 import { useState } from "react";
 
@@ -9,6 +9,8 @@ type InputProps = {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   name?: string;
+  maxlength?:number;
+  minlength?:number;
 };
 
 const Input = ({
@@ -18,6 +20,8 @@ const Input = ({
   onChange,
   className,
   name,
+  maxlength,
+  minlength
 }: InputProps) => {
   const inputClasses = classNames(
     "px-3 py-2 rounded text-black border",
@@ -36,6 +40,8 @@ const Input = ({
         value={value}
         className={inputClasses}
         onChange={onChange}
+        maxLength={maxlength}
+        minLength={minlength}
       />
       <div
         className="absolute right-3 top-8 text-gray-500"

@@ -50,6 +50,7 @@ const ChatRoom = () => {
 
     fetchOtherUser();
     while (!socket?.connect) {
+      console.log("connecting")
       connectSocket();
     }
     emitEvent("fetch-messages" + userContext?.user?.user_id, chat_id);
@@ -77,13 +78,13 @@ const ChatRoom = () => {
 
   return (
     <div className="min-h-lvh">
-      <ChatHeader name={otherUser?.name} />
+      <ChatHeader name={otherUser?.name} user_id={otherUser?.user_id} />
       <div className="min-h-lvh my-16 mb-24">
         <div className="overflow-y-scroll ">
           {chats.length > 0 &&
             chats.map((chat, index) => (
               <div key={index}>
-                {index === 0 && chats.length >= 30 && (
+                {index === 0 && chats.length >= 20 && (
                   <p className="text-center bg-gray-300">
                     Last {chats.length} messages
                   </p>

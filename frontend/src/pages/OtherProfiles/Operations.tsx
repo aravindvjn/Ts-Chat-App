@@ -42,6 +42,9 @@ const Operations = ({ id }: IdProps) => {
 
     fetchFriendStatus();
   }, [id, userContext?.refresh]);
+  if(userContext?.user?.user_id === id){
+    return null;
+   }
   if (status.status === "Loading") return <AddFriendButton status="Loading" />;
   if (status.status === "Friend") return <RemoveOrMessage id={id} />;
 

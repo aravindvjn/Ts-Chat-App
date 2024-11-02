@@ -31,13 +31,14 @@ const Suggested = () => {
   return (
     <div>
       <p className="font-bold p-2 pl-0 pb-0">New to {AppName}:</p>
-      {limitedUsers.length > 0 &&
-        limitedUsers.map((user) => {
-          if (user) {
-            return <SingleUser key={user.user_id} user={user} />;
-          }
-          return null;
-        })}
+      {limitedUsers.length > 0
+        ? limitedUsers.map((user) => {
+            if (user) {
+              return <SingleUser key={user.user_id} user={user} />;
+            }
+            return null;
+          })
+        : <div className="animate-pulse text-center pt-4">Loading..</div>}
     </div>
   );
 };
