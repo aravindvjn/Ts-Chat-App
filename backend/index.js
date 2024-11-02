@@ -42,18 +42,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 io.use(verifyToken);
 
-// Error Handler
-const errorHandler = (err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'An unexpected error occurred';
-  console.error(`[Error] ${statusCode} - ${message}`, err);
-  res.status(statusCode).json({
-      success: false,
-      message: message,
-      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-  });
-};
-app.use(errorHandler);
+// Error-handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 // Root Route
 app.get("/", (req, res) => {
