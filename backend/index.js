@@ -26,8 +26,10 @@ const PORT = process.env.PORT || 3000;
 
 // Database Connection using Pool
 const { Pool } = pkg;
-export const pool = new Pool({
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  max: 20,
+  idleTimeoutMillis: 30000, 
 });
 
 // Test database connection
@@ -82,7 +84,7 @@ io.on("connection", (socket) => {
         [chat_id, user_id, receiver_id, message]
       );
 
-      io.emit("new-message" + chat_id, result.rows[0]); // Emit to all clients in the chat
+      io.emit("new-message" + chat_id, result.rows[0]); 
     } catch (err) {
       console.error("Error inserting message:", err);
     }
@@ -102,3 +104,4 @@ app.use("/chat", chatRouter);
 server.listen(PORT, () => {
   console.log(`Server Listening on PORT ${PORT}`);
 });
+export default pool;

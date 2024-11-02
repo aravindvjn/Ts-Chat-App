@@ -1,22 +1,9 @@
 import { Router } from "express";
 import { verifyUser } from "./auth.js";
 const router = Router();
-import pkg from "pg";
+import pool from "../index.js";
 import dotenv from "dotenv";
 dotenv.config();
-
-//Database
-const { Pool } = pkg;
-export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-
-
-// Test database connection
-pool
-  .connect()
-  .then(() => console.log("Connected to the database"))
-  .catch((err) => console.error("Connection error", err.stack));
 
 //Search Friends
 router.get("/search-user", async (req, res) => {
