@@ -47,18 +47,18 @@ const AllProfiles: React.FC = () => {
 
   return (
     <div>
-      {chatFriends.length > 0 ? (
+      {chatFriends.length > 0 &&
         chatFriends.map((chat, index) => {
           return <SingleProfile key={index} chat={chat} />;
-        })
-      ) : (
-        <div className="animate-pulse text-lg text-center pt-4">Loading..</div>
-      )}
+        })}
       {message === "Add New Friends." && (
         <div className="p-5">
           <p className="text-center font-bold">{message}</p>
           <Suggested />
         </div>
+      )}
+      {!message && chatFriends.length === 0 && (
+        <div className="animate-pulse text-center pt-4">Loading..</div>
       )}
     </div>
   );

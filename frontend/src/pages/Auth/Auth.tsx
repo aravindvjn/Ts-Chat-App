@@ -9,7 +9,7 @@ const Auth = () => {
   const location = useLocation();
   const page = location?.pathname === "/register" ? "Register" : "Login";
   return (
-    <div className="flex justify-center min-h-lvh items-center bg-black text-background">
+    <div className="flex justify-center min-h-svh items-center bg-black text-background">
       <Form page={page} />
     </div>
   );

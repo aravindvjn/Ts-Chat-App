@@ -14,7 +14,7 @@ const MenuSlider = ({ setMenuStatus }: MenuProps) => {
     localStorage.clear();
     navigate("/login");
   };
-  const liClassess = "py-5 flex justify-center  border-b-2";
+  const liClassess = "cursor-pointer py-5 flex justify-center  border-b-2";
   return (
     <div
       onClick={() => setMenuStatus(false)}

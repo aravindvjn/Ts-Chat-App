@@ -37,7 +37,7 @@ const ProfileData = () => {
               onClick={() => {
                 navigate("/edit-your-profile");
               }}
-              className="flex mb-5 w-24 justify-center gap-2 items-center h-10 border-2 border-purple-800 text-purple-800 rounded-lg"
+              className="flex mb-5 w-24 justify-center gap-2 items-center h-10 border-2 border-purple-800 text-purple-800 rounded-lg cursor-pointer"
             >
               <Edit className="" />
               <p>Edit</p>
@@ -47,7 +47,7 @@ const ProfileData = () => {
               onClick={() => {
                 navigate("/change-your-password");
               }}
-              className="flex mb-5 w-56 justify-center gap-2 items-center h-10 border-2 border-purple-800 text-purple-800 rounded-lg"
+              className="flex mb-5 w-56 justify-center gap-2 items-center h-10 border-2 border-purple-800 text-purple-800 rounded-lg cursor-pointer"
             >
               <Edit className="" />
               <p>Chane your Password</p>

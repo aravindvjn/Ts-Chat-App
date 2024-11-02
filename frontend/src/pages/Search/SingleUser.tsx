@@ -8,8 +8,8 @@ type SingleUserProps = {
 const SingleUser = ({ user }: SingleUserProps) => {
   const navigate = useNavigate();
   return (
-    <div data-aos="slide-right"
-      className="p-2 border-b flex gap-4"
+    <div data-aos="slide-up"
+      className="p-2 border-b flex gap-4 cursor-pointer"
       onClick={() => navigate("/profile-user/" + user?.user_id)}
     >
       <Avatar variant="small" src={user?.profile_pic_url} />

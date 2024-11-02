@@ -12,7 +12,7 @@ export type ChatHeaderProps = {
 const ChatHeader = ({ name, user_id }: ChatHeaderProps) => {
   const navigate = useNavigate();
   return (
-    <div className="fixed right-0 left-0 top-0 h-16 z-10 flex bg-background items-center shadow-md px-4">
+    <div className="fixed right-0 left-0 top-0 h-16 z-10 flex bg-background items-center shadow-md px-4 w-[400px] m-auto">
       <ArrowBackIos
         className="absolute cursor-pointer"
         onClick={() => navigate(-1)}
@@ -20,7 +20,7 @@ const ChatHeader = ({ name, user_id }: ChatHeaderProps) => {
       {name && (
         <p
           onClick={() => navigate("/profile-user/" + user_id)}
-          className="font-bold text-center w-full"
+          className="font-bold cursor-pointer text-center w-full"
         >
           {name}
         </p>

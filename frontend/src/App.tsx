@@ -28,7 +28,7 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <>
+    <div className="w-[400px] m-auto min-h-svh bg-background">
       <Routes>
         <Route path="/" element={userData?.user ? <Home /> : <Auth />} />
         <Route path="/login" element={<Auth />} />
@@ -66,7 +66,7 @@ function App() {
         />
         {/* <Route path="*" element={<Auth />} /> */}
       </Routes>
-    </>
+    </div>
   );
 }
 

@@ -4,6 +4,7 @@ import { authURL } from "../../global/Links/Links";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading/Loading";
 import PopUp from "../../components/PopUp/PopUp";
+import ChatHeader from "../ChatRoom/ChatHeader";
 
 type PasswordProps = {
   oldpassword: string | undefined;
@@ -63,6 +64,7 @@ const ChangePass = () => {
   };
   return (
     <div className="p-5 flex flex-col justify-center items-center gap-5 min-h-svh">
+      <ChatHeader />
       <p className="font-bold">Change Your Password</p>
       {loading && <Loading />}
       {message && <PopUp message={message} setMessage={setMessage} />}

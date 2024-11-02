@@ -8,6 +8,7 @@ import { authURL } from "../../global/Links/Links";
 import Loading from "../../components/Loading/Loading";
 import { useNavigate } from "react-router-dom";
 import { Delete } from "@mui/icons-material";
+import ChatHeader from "../ChatRoom/ChatHeader";
 
 const EditYourProfile = () => {
   const navigate = useNavigate();
@@ -69,7 +70,8 @@ const EditYourProfile = () => {
     }
   };
   return (
-    <div className=" text-gray-600 p-5 flex flex-col justify-center items-center">
+    <div className=" text-gray-600 p-5 flex flex-col justify-center items-center pt-24">
+      <ChatHeader />
       {loading && <Loading />}
       <Input
         type="text"

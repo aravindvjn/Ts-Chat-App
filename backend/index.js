@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
         [chat_id,user_id  , receiver_id, message]
       );
 
-      io.emit("new-message"+user_id, result.rows[0]); // Emit to all clients in the chat
+      io.emit("new-message"+chat_id, result.rows[0]); // Emit to all clients in the chat
     } catch (err) {
       console.error("Error inserting message:", err);
     }

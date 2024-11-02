@@ -16,12 +16,15 @@
 
 :root {
   @apply bg-background;
+  background-color: black;
   @apply text-black;
   font-family: 'Archivo', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   box-sizing: border-box;
 
 }
-
+::-webkit-scrollbar{
+  display: none;
+}
 @keyframes pulse-gradient-fetching {
   0% {
     background-position: 0% 50%;

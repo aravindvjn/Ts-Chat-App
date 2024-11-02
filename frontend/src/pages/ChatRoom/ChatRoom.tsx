@@ -50,7 +50,7 @@ const ChatRoom = () => {
 
     fetchOtherUser();
     while (!socket?.connect) {
-      console.log("connecting")
+      console.log("connecting");
       connectSocket();
     }
     emitEvent("fetch-messages" + userContext?.user?.user_id, chat_id);
@@ -60,7 +60,8 @@ const ChatRoom = () => {
         setChats(message);
       }
     );
-    listenToEvent("new-message" + userContext?.user?.user_id, (message) => {
+    listenToEvent("new-message" + chat_id, (message) => {
+      console.log("new");
       setChats((prevMessages) => [...prevMessages, message]);
       if (lastMessageRef.current) {
         lastMessageRef.current.scrollIntoView({
@@ -79,7 +80,7 @@ const ChatRoom = () => {
   return (
     <div className="">
       <ChatHeader name={otherUser?.name} user_id={otherUser?.user_id} />
-      <div className="my-16 mb-24">
+      <div className="py-16 pb-24">
         <div className="overflow-y-scroll">
           {chats.length > 0 &&
             chats.map((chat, index) => (

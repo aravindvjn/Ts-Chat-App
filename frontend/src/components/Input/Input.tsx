@@ -44,7 +44,7 @@ const Input = ({
         minLength={minlength}
       />
       <div
-        className="absolute right-3 top-8 text-gray-500"
+        className="absolute right-3 top-8 text-gray-500 cursor-pointer"
         onClick={() => {
           setVisible(visible === "password" ? "text" : "password");
         }}
