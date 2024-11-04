@@ -7,6 +7,7 @@ export type UserProps = {
   profile_pic_url: string;
   user_id: string;
   name: string;
+  auth?: boolean | undefined;
 };
 
 type UserProviderProps = {

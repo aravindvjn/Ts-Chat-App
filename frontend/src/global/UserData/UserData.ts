@@ -5,7 +5,6 @@ export const getUserData = async () => {
     const token = localStorage.getItem("token")
     try {
         if (!token) {
-            console.log("Not authenticated");
             return null;
         } else {
             const response = await fetch(authURL + "/user-data", {
@@ -17,9 +16,7 @@ export const getUserData = async () => {
             })
             const data = await response.json()
             if (response.ok) {
-                return data;
-            } else {
-                console.log(data.message)
+                return { ...data, auth: true };
             }
         }
     } catch (err) {

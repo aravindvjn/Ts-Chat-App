@@ -6,7 +6,7 @@ import Search from "./pages/Search/Search";
 import ChatRoom from "./pages/ChatRoom/ChatRoom";
 import SetProfile from "./pages/Auth/SetProfile";
 import UserProfile from "./pages/UserProfile/UserProfile";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Notifications from "./pages/Notifications/Notifications";
 import OtherProfiles from "./pages/OtherProfiles/OtherProfiles";
 import { getUserData } from "./global/UserData/UserData";
@@ -17,16 +17,21 @@ import AboutUs from "./pages/About/AboutUs";
 import Notification from "./components/DropDown/Notification";
 
 function App() {
+  const [gotData, setGotData] = useState<boolean>(false);
   const location = useLocation();
   const userData = useContext(UserContext);
   useEffect(() => {
     const fetchUser = async () => {
       const user = await getUserData();
+      setGotData(true);
       userData?.setUser(user);
+      console.log(user);
     };
     fetchUser();
   }, [location.pathname]);
-
+  if (!gotData) {
+    return null;
+  }
   return (
     <div className="max-w-[640px] m-auto min-h-svh bg-background">
       {userData?.notification && (

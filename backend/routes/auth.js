@@ -128,7 +128,9 @@ router.get("/user-data", verifyUser, async (req, res) => {
       "SELECT username, user_id, bio, created_at, profile_pic_url, name FROM users WHERE user_id = $1",
       [req.user.id]
     );
-    res.status(200).json(response.rows[0]);
+    if (response.rows.length > 0) {
+      res.status(200).json(response.rows[0]);
+    }
   } catch (err) {
     console.log("Error in getting user data", err);
   }
