@@ -182,7 +182,7 @@ router.get("/pending-requests", verifyUser, async (req, res) => {
       SELECT fr.*, u.username, u.name, u.profile_pic_url
       FROM friend_requests fr
       JOIN users u ON fr.sender_id = u.user_id
-      WHERE fr.receiver_id = $1 AND fr.status = 'pending'
+      WHERE fr.receiver_id = $1 AND fr.status = 'pending' ORDER BY created_at DESC
       `,
       [user_id]
     );
