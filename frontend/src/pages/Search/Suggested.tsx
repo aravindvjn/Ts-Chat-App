@@ -43,14 +43,16 @@ const Suggested = () => {
         <div className="animate-pulse text-center pt-4">Loading..</div>
       )}
       {limitedUsers?.length >= 3 && limitedUsers.length % 3 === 0 && (
-        <p
-          className="text-center pt-5 text-link"
-          onClick={() => {
-            setNumber(number + 3);
-          }}
-        >
-          SEE MORE
-        </p>
+        <div className="text-center">
+          <button
+            className="pt-5 text-link"
+            onClick={() => {
+              setNumber(number + 3);
+            }}
+          >
+            SEE MORE
+          </button>
+        </div>
       )}
     </div>
   );
