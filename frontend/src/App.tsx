@@ -15,6 +15,7 @@ import ChangePass from "./pages/UserProfile/ChangePass";
 import AboutApp from "./pages/About/AboutApp";
 import AboutUs from "./pages/About/AboutUs";
 import Notification from "./components/DropDown/Notification";
+import SplashScreen from "./components/SplashScreen/SplashScreen";
 
 function App() {
   const [gotData, setGotData] = useState<boolean>(false);
@@ -30,7 +31,7 @@ function App() {
     fetchUser();
   }, [location.pathname]);
   if (!gotData) {
-    return null;
+    return <SplashScreen />;
   }
   return (
     <div className="max-w-[640px] m-auto min-h-svh bg-background">
