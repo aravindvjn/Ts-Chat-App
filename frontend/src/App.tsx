@@ -26,7 +26,6 @@ function App() {
       const user = await getUserData();
       setGotData(true);
       userData?.setUser(user);
-      console.log(user);
     };
     fetchUser();
   }, [location.pathname]);
@@ -34,7 +33,7 @@ function App() {
     return <SplashScreen />;
   }
   return (
-    <div className="max-w-[640px] m-auto min-h-svh bg-background">
+    <div data-aos="slide-left" className="max-w-[640px] m-auto min-h-svh bg-background">
       {userData?.notification && (
         <Notification
           notification={userData?.notification}
