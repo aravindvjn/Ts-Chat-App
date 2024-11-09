@@ -9,6 +9,7 @@ import handleSubmit from "./handleSubmit";
 import { AppName, authURL } from "../../global/Links/Links";
 import { UserContext } from "../../global/Context/UserContext";
 import Loading from "../../components/Loading/Loading";
+import logo from "../../assets/TransparentLogo.png";
 
 const Form = ({ page = "Login" }: AuthProps) => {
   const navigate = useNavigate();
@@ -103,10 +104,13 @@ const Form = ({ page = "Login" }: AuthProps) => {
     >
       {loading && <Loading />}
       {message && <PopUp message={message} setMessage={setMessage} />}
-      <p className="text- text-center font-bold">{AppName}</p>
-      <p className="text-center">
-        {page === "Register" ? messages.Register : messages.Login}{" "}
-      </p>
+      <div className="flex flex-col">
+        <img src={logo} className="self-center h-16" />
+        <p className="text-center font-bold">{AppName}</p>
+        <p className="text-center">
+          {page === "Register" ? messages.Register : messages.Login}{" "}
+        </p>
+      </div>
       {page === "Register" && (
         <Input
           type="text"

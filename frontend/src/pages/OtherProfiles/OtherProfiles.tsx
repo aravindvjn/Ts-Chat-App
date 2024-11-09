@@ -43,7 +43,7 @@ const OtherProfiles = () => {
     );
   }
   return (
-    <div className="p-5 pt-24 flex flex-col justify-center items-center overflow-y-scroll">
+    <div className="p-5 pt-24 flex flex-col justify-center items-center h-svh overflow-auto">
       <ChatHeader />
       <Avatar variant="double" src={otherUser?.profile_pic_url} />
 
