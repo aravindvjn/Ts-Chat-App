@@ -64,7 +64,7 @@ const ChangePass = () => {
     }
   };
   return (
-    <div className="p-5 flex flex-col justify-center items-center gap-5 min-h-svh">
+    <div className="p-5 flex flex-col justify-center items-center gap-5 h-svh overflow-y-scroll">
       <ChatHeader />
       <p className="font-bold">Change Your Password</p>
       {loading && <Loading />}

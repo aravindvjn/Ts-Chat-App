@@ -40,7 +40,7 @@ const Search = () => {
     }
   };
   return (
-    <div className="p-5">
+    <div className="p-5 max-h-svh overflow-y-scroll pb-16">
       <SearchInput onChange={handleChange} />
       {message && <p className="py-2">{message}</p>}
       {foundUsers?.length > 0 &&

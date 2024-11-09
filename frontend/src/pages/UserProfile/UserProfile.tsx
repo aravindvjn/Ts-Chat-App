@@ -4,7 +4,7 @@ import ProfileData from "./ProfileData"
 
 const UserProfile = () => {
   return (
-    <div className="p-5">
+    <div className="p-5 max-h-svh overflow-y-scroll">
       <p className="font-bold text-lg pb-2">Account Settings</p>
       <ProfileData  />
       <Footer />

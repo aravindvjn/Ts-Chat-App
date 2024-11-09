@@ -69,7 +69,7 @@ const EditYourProfile = () => {
     }
   };
   return (
-    <div className=" text-gray-600 p-5 flex flex-col justify-center items-center pt-24">
+    <div className=" text-gray-600 p-5 flex flex-col justify-center items-center pt-24 max-h-svh overflow-y-scroll">
       <ChatHeader />
       {loading && <Loading />}
       <Input
