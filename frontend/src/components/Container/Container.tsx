@@ -5,7 +5,7 @@ type ContainerProps = {
 };
 
 const Container: React.FC<ContainerProps> = ({ children }) => {
-  return <div className="py-16 overflow-y-scroll">{children}</div>;
+  return <div className="py-16 overflow-auto h-screen">{children}</div>;
 };
 
 export default Container;

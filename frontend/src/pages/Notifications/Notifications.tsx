@@ -6,7 +6,6 @@ import Suggested from "../Search/Suggested";
 import Footer from "../../components/Footer/Footer";
 
 const Notifications = () => {
-
   const [requests, setRequests] = useState([]);
   useEffect(() => {
     const fetchFriendRequests = async () => {
@@ -34,16 +33,16 @@ const Notifications = () => {
     fetchFriendRequests();
   }, []);
   return (
-    <div className="p-5 overflow-y-scroll">
-      <p className="font-bold">Friend Requests</p>
-      {requests.length > 0 ? (
-        requests.map((req) => {
-          return <SingleRequest req={req} />;
-        })
-      ) : (
-        <p className="text-center p-5 opacity-60">No Friend requests</p>
-      )}
-      <Suggested />
+    <div className="p-5 h-svh overflow-auto">
+        <p className="font-bold">Friend Requests</p>
+        {requests.length > 0 ? (
+          requests.map((req) => {
+            return <SingleRequest req={req} />;
+          })
+        ) : (
+          <p className="text-center p-5 opacity-60">No Friend requests</p>
+        )}
+        <Suggested />
       <Footer />
     </div>
   );
