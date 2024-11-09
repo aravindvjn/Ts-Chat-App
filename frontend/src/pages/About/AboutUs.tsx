@@ -13,7 +13,7 @@ const AboutUs = () => {
         <li>
           <a
             className="text-link"
-            href="https://aravindvjn.github.io/profile/"
+            href="https://aravind-vijayan-profile.vercel.app/"
             target="_blank"
           >
            My Portfolio
