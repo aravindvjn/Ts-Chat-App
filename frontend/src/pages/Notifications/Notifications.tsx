@@ -33,7 +33,8 @@ const Notifications = () => {
     fetchFriendRequests();
   }, []);
   return (
-    <div className="p-5 h-svh overflow-auto">
+    <div className="h-screen overflow-scroll">
+      <div className="p-5">
         <p className="font-bold">Friend Requests</p>
         {requests.length > 0 ? (
           requests.map((req) => {
@@ -43,6 +44,7 @@ const Notifications = () => {
           <p className="text-center p-5 opacity-60">No Friend requests</p>
         )}
         <Suggested />
+      </div>
       <Footer />
     </div>
   );
