@@ -33,7 +33,7 @@ function App() {
     return <SplashScreen />;
   }
   return (
-    <div data-aos="slide-left" className="max-w-[640px] m-auto bg-background h-lvh">
+    <div data-aos="slide-left" className="max-w-[640px] m-auto bg-background max-h-lvh min-h-svh">
       {userData?.notification && (
         <Notification
           notification={userData?.notification}
