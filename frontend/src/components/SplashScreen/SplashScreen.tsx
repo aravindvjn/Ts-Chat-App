@@ -9,7 +9,7 @@ const SplashScreen = () => {
         setWait("Just a little longer!");
 setTimeout(() => {
         setWait("Please check your Connection.");
-      }, 25000);
+      }, 30000);
       }, 10000);
 
     }, 3000);

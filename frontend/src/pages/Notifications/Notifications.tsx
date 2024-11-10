@@ -33,7 +33,7 @@ const Notifications = () => {
     fetchFriendRequests();
   }, []);
   return (
-    <div className="h-screen overflow-scroll">
+    <div className="h-dvh overflow-y-scroll">
       <div className="p-5">
         <p className="font-bold">Friend Requests</p>
         {requests.length > 0 ? (
