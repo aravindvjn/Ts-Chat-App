@@ -33,41 +33,43 @@ const Footer = () => {
     fetchAllFriends();
   }, [userContext?.notification]);
   return (
-    <div className="fixed bottom-0 left-0 right-0 mx-auto flex justify-around items-center bg-secondary h-16 shadow-top max-w-[640px]">
-      <Home
-        className={`${footerClasses} ${pathname === "/" ? "opacity-75" : ""}`}
-        fontSize="large"
-        onClick={() => navigate("/")}
-      />
-      <Search
-        className={`${footerClasses} ${
-          pathname === "/search" ? "opacity-75" : ""
-        }`}
-        fontSize="large"
-        onClick={() => navigate("/search")}
-      />
-      <div className="relative">
-        <Notifications
+    <div className="fixed -bottom-28 left-0 right-0 mx-auto  bg-secondary h-44 shadow-top max-w-[640px]">
+      <div  className="flex  h-16 justify-around items-center" >
+        <Home
+          className={`${footerClasses} ${pathname === "/" ? "opacity-75" : ""}`}
+          fontSize="large"
+          onClick={() => navigate("/")}
+        />
+        <Search
           className={`${footerClasses} ${
-            pathname === "/notifications" ? "opacity-75" : ""
+            pathname === "/search" ? "opacity-75" : ""
           }`}
           fontSize="large"
-          onClick={() => navigate("/notifications")}
+          onClick={() => navigate("/search")}
         />
+        <div className="relative">
+          <Notifications
+            className={`${footerClasses} ${
+              pathname === "/notifications" ? "opacity-75" : ""
+            }`}
+            fontSize="large"
+            onClick={() => navigate("/notifications")}
+          />
 
-        {notificationNo > 0 && (
-          <p className="absolute right-0 top-0 bg-red-600  text-white rounded-full h-4 w-4 flex justify-center items-center text-[10px]">
-            {notificationNo}
-          </p>
-        )}
+          {notificationNo > 0 && (
+            <p className="absolute right-0 top-0 bg-red-600  text-white rounded-full h-4 w-4 flex justify-center items-center text-[10px]">
+              {notificationNo}
+            </p>
+          )}
+        </div>
+        <Person
+          className={`${footerClasses} ${
+            pathname === "/user-profile" ? "opacity-75" : ""
+          }`}
+          fontSize="large"
+          onClick={() => navigate("/user-profile")}
+        />
       </div>
-      <Person
-        className={`${footerClasses} ${
-          pathname === "/user-profile" ? "opacity-75" : ""
-        }`}
-        fontSize="large"
-        onClick={() => navigate("/user-profile")}
-      />
     </div>
   );
 };
