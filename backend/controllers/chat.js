@@ -1,12 +1,13 @@
-import { pool } from "../lib/db.js";
+import { query } from "../lib/db.js";
 
 //get Chats by Chat Id
 export const getChatsByChatId = async (req, res) => {
+
   const { chat_id } = req.params;
   const user_id = req.user.id;
 
   try {
-    const results = await pool.query(
+    const results = await query(
       `SELECT 
         u.user_id, 
         u.username, 
@@ -26,8 +27,123 @@ export const getChatsByChatId = async (req, res) => {
         .status(404)
         .json({ message: "User details not found for this chat." });
     }
+
   } catch (err) {
     console.error("Error fetching user details:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+//Get All chats by user
+export const getAllChatsByUser = async (req, res) => {
+
+  try {
+
+    const userId = req.user.id;
+
+    const results = await query(
+      `SELECT 
+        c.chat_id, 
+        CASE 
+          WHEN c.user1_id = $1 THEN c.user2_id 
+          ELSE c.user1_id 
+        END AS friend_id,
+        CASE 
+          WHEN c.user1_id = $1 THEN u2.username 
+          ELSE u1.username 
+        END AS friend_username,
+        CASE 
+          WHEN c.user1_id = $1 THEN u2.name 
+          ELSE u1.name 
+        END AS friend_name,
+        CASE 
+          WHEN c.user1_id = $1 THEN u2.profile_pic_url 
+          ELSE u1.profile_pic_url 
+        END AS friend_profile_pic,
+        COALESCE(m.content, NULL) AS last_message,
+        COALESCE(m.sent_at AT TIME ZONE 'UTC', NULL) AS last_message_time,
+        COALESCE(m.message_id, NULL) AS last_message_id, 
+        COALESCE(m.sender_id, NULL) AS last_message_sender_id, 
+        COALESCE(m.is_read, false) AS last_message_is_read
+      FROM chats c
+      JOIN users u1 ON c.user1_id = u1.user_id
+      JOIN users u2 ON c.user2_id = u2.user_id
+      LEFT JOIN (
+        SELECT DISTINCT ON (chat_id) 
+          chat_id, 
+          content, 
+          sent_at, 
+          message_id, -- Select message ID
+          sender_id, -- Select sender ID
+          is_read -- Select is_read status
+        FROM messages 
+        WHERE chat_id IS NOT NULL 
+        ORDER BY chat_id, sent_at DESC
+      ) m ON c.chat_id = m.chat_id
+      WHERE (c.user1_id = $1 OR c.user2_id = $1)
+      ORDER BY last_message_time DESC NULLS LAST, c.chat_id DESC`,
+      [userId]
+    );
+
+    if (results.rows.length > 0) {
+      res.status(200).json(results.rows);
+    } else {
+      res.status(201).json({ message: "Add New Friends." });
+    }
+
+  } catch (err) {
+    console.error("Error in fetching chats:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+//Get ChatId
+export const getChatId = async (req, res) => {
+
+  try {
+
+    const { user2 } = req.params;
+
+    const chat_id = await query(
+      "SELECT chat_id FROM chats WHERE (user1_id=$1 AND user2_id =$2) OR (user1_id=$2 AND user2_id =$1)",
+      [req.user.id, user2]
+    );
+
+    if (chat_id.rows.length > 0) {
+      res.status(200).json({ chat_id: chat_id.rows[0] });
+    } else {
+      res.status(400).json({ message: "Something Went Wrong." });
+    }
+
+  } catch (err) {
+    console.error("Error in Fetching chat id");
+  }
+};
+
+//Set Message as Read
+export const setMessageAsRead = async (req, res) => {
+
+  const { message_id } = req.params;
+  const user_id = req.user.id;
+
+  try {
+    const result = await query(
+      "UPDATE messages SET is_read = TRUE WHERE message_id = $1 AND receiver_id = $2 RETURNING *",
+      [message_id, user_id]
+    );
+
+    if (result.rows.length > 0) {
+      res.status(200).json({
+        message: "Message marked as read successfully.",
+        updatedMessage: result.rows[0],
+      });
+
+    } else {
+      res.status(201).json({ message: "Message not found or already read." });
+    }
+    
+  } catch (err) {
+    console.error("Error marking message as read:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

@@ -1,10 +1,8 @@
 import { Router } from "express";
 const router = Router();
-import dotenv from "dotenv";
 import { changeDetails, changePassword, loginUser, registerUser } from "../controllers/auth.js";
 import { verifyUser } from "../lib/functions.js";
 import { checkUser, getUserData } from "../controllers/user.js";
-dotenv.config();
 
 //Generate Token
 
