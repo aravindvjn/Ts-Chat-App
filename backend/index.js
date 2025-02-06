@@ -7,7 +7,6 @@ import authRouter from "./routes/auth.js";
 import friendsRouter from "./routes/friends.js";
 import chatRouter from "./routes/chat.js";
 import serverless from "serverless-http";
-import { query } from "./lib/db.js";
 import { verifyToken } from "./lib/functions.js";
 import { socketConnection } from "./controllers/socket.js";
 
