@@ -1,13 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import pkg from "pg";
 import http from "http";
 import { Server } from "socket.io";
-import authRouter, { verifyToken } from "./routes/auth.js";
+import authRouter from "./routes/auth.js";
 import friendsRouter from "./routes/friends.js";
 import chatRouter from "./routes/chat.js";
 import serverless from 'serverless-http';
+import { pool } from "./lib/db.js";
+import { verifyToken } from "./lib/functions.js";
 
 dotenv.config();
 const app = express();
@@ -25,17 +26,6 @@ export const io = new Server(server, {
 // Port
 const PORT = process.env.PORT || 8000;
 
-// Database Connection using Pool
-const { Pool } = pkg;
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-
-// Test database connection
-pool
-  .connect()
-  .then(() => console.log("Connected to the database"))
-  .catch((err) => console.error("Connection error", err.stack));
 // Error-handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

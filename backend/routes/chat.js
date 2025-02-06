@@ -2,40 +2,12 @@ import { Router } from "express";
 const router = Router();
 import pool from "../index.js";
 import dotenv from "dotenv";
-import { verifyUser } from "./auth.js";
+import { verifyUser } from "../lib/functions.js";
+import { getChatsByChatId } from "../controllers/chat.js";
 
 dotenv.config();
 // Get User details by chat_id
-router.get("/user-details/:chat_id", verifyUser, async (req, res) => {
-  const { chat_id } = req.params;
-  const user_id = req.user.id;
-
-  try {
-    const results = await pool.query(
-      `SELECT 
-        u.user_id, 
-        u.username, 
-        u.name, 
-        u.profile_pic_url 
-      FROM chats c
-      JOIN users u ON 
-        (u.user_id = c.user1_id OR u.user_id = c.user2_id)
-      WHERE c.chat_id = $1 AND u.user_id != $2`,
-      [chat_id, user_id]
-    );
-
-    if (results.rows.length > 0) {
-      res.status(200).json(results.rows[0]);
-    } else {
-      res
-        .status(404)
-        .json({ message: "User details not found for this chat." });
-    }
-  } catch (err) {
-    console.error("Error fetching user details:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+router.get("/user-details/:chat_id", verifyUser,getChatsByChatId);
 
 // Get all chats by user ID, including details for user1, user2, and the last message
 router.get("/user-all-chats", verifyUser, async (req, res) => {

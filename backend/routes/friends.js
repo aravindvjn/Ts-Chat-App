@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { verifyUser } from "./auth.js";
 const router = Router();
 import pool from "../index.js";
 import dotenv from "dotenv";
+import { verifyUser } from "../lib/functions.js";
 dotenv.config();
 
 //Search Friends
